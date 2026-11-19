@@ -1,0 +1,3028 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Irregular Verbs Quiz • глаголы 1-80</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(30, 41, 59, 0.95);
+            border-radius: 30px;
+            padding: 40px;
+            max-width: 650px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(139, 92, 246, 0.15);
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+
+        h1 {
+            color: #fbbf24;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
+        }
+
+        .subtitle {
+            color: #a5b4fc;
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .game-subtitle {
+            color: #a5b4fc;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        /* Экран выбора режима */
+        .mode-screen {
+            display: block;
+        }
+
+        .mode-title {
+            color: #fbbf24;
+            font-size: 1.5em;
+            margin-bottom: 25px;
+        }
+
+        .mode-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .mode-btn {
+            border: none;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 1.08em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+        }
+
+        .mode-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 20px currentColor;
+        }
+
+        .mode-btn:active {
+            transform: translateY(0);
+        }
+
+        .mode-btn.mode-v2 {
+            background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+        }
+
+        .mode-btn.mode-v3 {
+            background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%);
+        }
+
+        .mode-btn.mode-both {
+            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+        }
+
+        .mode-btn.mode-translate {
+            background: linear-gradient(135deg, #c084fc 0%, #a855f7 100%);
+        }
+
+        .mode-btn .mode-emoji {
+            font-size: 1.12em;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .mode-btn .mode-desc {
+            display: block;
+            font-size: 0.7em;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        /* Прогресс в виде кружков */
+        .progress-dots {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 30px;
+            padding: 15px 10px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 20px;
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(139, 92, 246, 0.15);
+        }
+
+        .dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #334155;
+            border: 2.5px solid #475569;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75em;
+            font-weight: bold;
+            color: #64748b;
+            transition: all 0.4s ease;
+        }
+
+        .dot.current {
+            background: #fbbf24;
+            border-color: #fde68a;
+            color: #78350f;
+            animation: pulse 1.5s infinite;
+            transform: scale(1.1);
+            box-shadow: 0 0 12px rgba(251, 191, 36, 0.6);
+        }
+
+        .dot.correct {
+            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+            border-color: #6ee7b7;
+            color: white;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+        }
+
+        .dot.wrong {
+            background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+            border-color: #fca5a5;
+            color: white;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 12px rgba(251, 191, 36, 0.6); }
+            50% { box-shadow: 0 0 20px rgba(251, 191, 36, 0.9); }
+        }
+
+        /* Счётчик серии */
+        .streak-counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(30, 41, 59, 0.95);
+            border-radius: 20px;
+            padding: 15px 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            z-index: 1000;
+            display: none;
+            border: 2px solid #fbbf24;
+        }
+
+        .streak-counter.active {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .streak-label {
+            font-size: 0.9em;
+            color: #a5b4fc;
+            margin-bottom: 5px;
+        }
+
+        .streak-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #fbbf24;
+            text-shadow: 0 0 15px rgba(251, 191, 36, 0.6);
+        }
+
+        .streak-fire {
+            font-size: 1.5em;
+        }
+
+        /* Уведомление о достижении */
+        .achievement-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: linear-gradient(135deg, #1e293b 0%, #312e81 100%);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(251, 191, 36, 0.4);
+            text-align: center;
+            z-index: 2000;
+            opacity: 0;
+            transition: all 0.5s ease;
+            border: 3px solid #fbbf24;
+        }
+
+        .achievement-popup.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .achievement-emoji {
+            font-size: 5em;
+            margin-bottom: 20px;
+            animation: bounce 0.8s ease;
+        }
+
+        .achievement-title {
+            font-size: 2em;
+            color: #fbbf24;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-shadow: 0 0 15px rgba(251, 191, 36, 0.5);
+        }
+
+        .achievement-desc {
+            font-size: 1.3em;
+            color: #e2e8f0;
+        }
+
+        .question {
+            font-size: 1.5em;
+            color: #e2e8f0;
+            margin-bottom: 30px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .question .translation {
+            font-size: 0.7em;
+            color: #a5b4fc;
+            font-style: italic;
+        }
+
+        /* Сетка ответов 2×2 */
+        .answers {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        /* Кнопки с тёмным контуром в тёмной теме */
+        .answer-btn {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #1e293b;
+            border: 3px solid #fef3c7;
+            padding: 22px 15px;
+            border-radius: 15px;
+            font-size: 1.15em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            box-shadow: 0 5px 15px rgba(251, 191, 36, 0.35), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.3);
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .answer-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(251, 191, 36, 0.6), 0 0 15px rgba(251, 191, 36, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+            background: linear-gradient(135deg, #fde047 0%, #fbbf24 100%);
+            border-color: #ffffff;
+        }
+
+        .answer-btn:active {
+            transform: translateY(0);
+        }
+
+        .answer-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .feedback {
+            font-size: 2em;
+            margin: 20px 0;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .correct {
+            color: #34d399;
+            animation: bounce 0.5s ease;
+            text-shadow: 0 0 15px rgba(52, 211, 153, 0.6);
+        }
+
+        .incorrect {
+            color: #f87171;
+            animation: shake 0.5s ease;
+            text-shadow: 0 0 15px rgba(248, 113, 113, 0.6);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .final-screen {
+            display: none;
+        }
+
+        .final-screen h2 {
+            color: #fbbf24;
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
+        }
+
+        .score-block {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(249, 115, 22, 0.15) 100%);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .score-line {
+            font-size: 1.4em;
+            color: #e2e8f0;
+            margin: 15px 0;
+        }
+
+        .score-line strong {
+            color: #fbbf24;
+            font-size: 1.3em;
+        }
+
+        .percent {
+            font-size: 3em;
+            color: #fbbf24;
+            margin: 20px 0;
+            font-weight: bold;
+            text-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+        }
+
+        /* Достижения в финальном экране */
+        .achievements-block {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(253, 224, 71, 0.15) 100%);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 2px solid rgba(251, 191, 36, 0.4);
+        }
+
+        .achievements-title {
+            color: #fbbf24;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .achievement-badge {
+            display: inline-block;
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 15px;
+            padding: 15px 20px;
+            margin: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(251, 191, 36, 0.4);
+        }
+
+        .achievement-badge .badge-emoji {
+            font-size: 2em;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .achievement-badge .badge-text {
+            font-size: 0.9em;
+            color: #e2e8f0;
+        }
+
+        /* Разбор ошибок */
+        .mistakes-block {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(248, 113, 113, 0.15) 100%);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: left;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .mistakes-title {
+            color: #f87171;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .mistake-card {
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+            border-left: 4px solid #ef4444;
+        }
+
+        .mistake-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .mistake-verb {
+            font-size: 1.3em;
+            color: #e2e8f0;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .mistake-translation {
+            font-size: 0.9em;
+            color: #a5b4fc;
+            font-style: italic;
+            margin-bottom: 8px;
+        }
+
+        .mistake-forms {
+            font-size: 1.05em;
+            color: #cbd5e1;
+        }
+
+        .mistake-forms .correct-form {
+            color: #34d399;
+            font-weight: bold;
+        }
+
+        .no-mistakes {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(52, 211, 153, 0.2) 100%);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: center;
+            border: 2px solid rgba(52, 211, 153, 0.4);
+        }
+
+        .no-mistakes-text {
+            font-size: 1.4em;
+            color: #34d399;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(52, 211, 153, 0.4);
+        }
+
+        .play-again-btn {
+            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+            color: white;
+            border: 3px solid #6ee7b7;
+            padding: 20px 50px;
+            border-radius: 15px;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+            margin-top: 20px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .play-again-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.6), 0 0 15px rgba(16, 185, 129, 0.4);
+            background: linear-gradient(135deg, #6ee7b7 0%, #34d399 100%);
+            border-color: #a7f3d0;
+        }
+
+        .emoji {
+            font-size: 3em;
+            margin: 20px 0;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Скроллбар для тёмной темы */
+        .mistakes-block::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .mistakes-block::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 4px;
+        }
+
+        .mistakes-block::-webkit-scrollbar-thumb {
+            background: rgba(251, 191, 36, 0.5);
+            border-radius: 4px;
+        }
+
+        .mistakes-block::-webkit-scrollbar-thumb:hover {
+            background: rgba(251, 191, 36, 0.7);
+        }
+
+        /* Карта прогресса по глаголам */
+        .verb-map {
+            margin: 18px 0 22px;
+            padding: 18px;
+            background: rgba(15, 23, 42, 0.72);
+            border: 1px solid rgba(139, 92, 246, 0.28);
+            border-radius: 20px;
+            text-align: left;
+        }
+        .verb-map-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .verb-map-title {
+            color: #fbbf24;
+            font-size: 1.15em;
+            font-weight: bold;
+        }
+        .verb-map-summary {
+            color: #a5b4fc;
+            font-size: .85em;
+        }
+        .verb-map-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+        .verb-node {
+            position: relative;
+            min-height: 58px;
+            border-radius: 13px;
+            border: 2px solid #475569;
+            background: #1e293b;
+            color: #94a3b8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+        }
+        .verb-node .verb-status {
+            font-size: 1.15em;
+            line-height: 1;
+        }
+        .verb-node .verb-name {
+            font-size: .82em;
+            font-weight: bold;
+            color: #e2e8f0;
+        }
+        .verb-node .verb-detail {
+            font-size: .65em;
+            color: #94a3b8;
+        }
+        .verb-node.mastered {
+            background: rgba(16, 185, 129, .18);
+            border-color: #34d399;
+            box-shadow: 0 0 10px rgba(52, 211, 153, .22);
+        }
+        .verb-node.training {
+            background: rgba(251, 191, 36, .15);
+            border-color: #fbbf24;
+        }
+        .verb-node.needs-review {
+            background: rgba(239, 68, 68, .16);
+            border-color: #f87171;
+            animation: mapAttention 1.8s ease-in-out infinite;
+        }
+        .verb-node.current-verb {
+            transform: scale(1.06);
+            border-color: #fde68a;
+            box-shadow: 0 0 0 3px rgba(251, 191, 36, .14), 0 0 18px rgba(251, 191, 36, .32);
+        }
+        .verb-node.boss-target {
+            border-color: #c084fc;
+            box-shadow: 0 0 14px rgba(192, 132, 252, .35);
+        }
+        @keyframes mapAttention {
+            0%, 100% { box-shadow: 0 0 0 rgba(248,113,113,0); }
+            50% { box-shadow: 0 0 13px rgba(248,113,113,.28); }
+        }
+        .verb-map-legend {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 12px;
+            color: #cbd5e1;
+            font-size: .78em;
+        }
+        .legend-item { display: flex; align-items: center; gap: 4px; }
+        @media (max-width: 520px) {
+            .verb-map-grid { grid-template-columns: repeat(4, 1fr); }
+            .verb-node { min-height: 54px; }
+            .verb-node .verb-name { font-size: .74em; }
+            .verb-node .verb-detail { display: none; }
+        }
+        @media (max-width: 380px) {
+            .verb-map-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        /* Новые игровые элементы */
+        .game-hud {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 0 0 18px;
+        }
+        .hud-card {
+            min-width: 105px;
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 14px;
+            padding: 8px 12px;
+            color: #e2e8f0;
+        }
+        .hud-label { font-size: .72em; color: #a5b4fc; }
+        .hud-value { font-size: 1.2em; font-weight: bold; color: #fbbf24; }
+        .xp-track {
+            height: 7px;
+            background: #334155;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        .xp-bar {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, #fbbf24, #f97316);
+            transition: width .35s ease;
+        }
+        .dot.review {
+            background: #c084fc;
+            border-color: #e9d5ff;
+            color: white;
+            box-shadow: 0 0 10px rgba(192,132,252,.5);
+        }
+        .boss-banner {
+            margin: 0 0 15px;
+            padding: 10px;
+            border-radius: 14px;
+            background: rgba(124,58,237,.2);
+            color: #e9d5ff;
+            border: 1px solid rgba(192,132,252,.4);
+            font-weight: bold;
+        }
+
+    
+.final-verb-map{
+  margin-top:24px;
+  padding:20px;
+  border-radius:24px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.10);
+}
+.final-map-title{
+  font-size:1.25rem;
+  font-weight:900;
+  margin-bottom:6px;
+}
+.final-map-subtitle{
+  opacity:.72;
+  font-size:.9rem;
+  line-height:1.45;
+  margin-bottom:16px;
+}
+.final-map-grid{
+  margin-top:4px;
+}
+.final-map-legend{
+  margin-top:14px;
+}
+.verb-node.current,
+.verb-node.boss-target{
+  /* In the final map there is no active question; keep status colors primary. */
+}
+@media (max-width:600px){
+  .final-verb-map{padding:15px}
+  .final-map-title{font-size:1.1rem}
+}
+
+
+/* ===== НОВАЯ ЦВЕТОВАЯ СХЕМА: OCEAN + CORAL ===== */
+body {
+    background:
+        radial-gradient(circle at 15% 15%, rgba(45, 212, 191, .28), transparent 28%),
+        radial-gradient(circle at 85% 80%, rgba(251, 113, 133, .22), transparent 30%),
+        linear-gradient(135deg, #e6fffb 0%, #f0fdfa 48%, #fff1f2 100%);
+    color: #17324d;
+}
+
+.container {
+    background: rgba(255, 255, 255, .96);
+    box-shadow: 0 20px 60px rgba(20, 80, 90, .18), 0 0 40px rgba(45, 212, 191, .12);
+    border: 2px solid rgba(45, 212, 191, .22);
+}
+
+h1 {
+    color: #0f766e;
+    text-shadow: 0 0 20px rgba(20, 184, 166, .22);
+}
+
+.subtitle, .game-subtitle {
+    color: #64748b;
+}
+
+.mode-title {
+    color: #0f766e;
+}
+
+.mode-btn {
+    box-shadow: 0 6px 18px rgba(15, 70, 80, .16);
+}
+
+.mode-btn.mode-v2 {
+    background: linear-gradient(135deg, #fb7185 0%, #f43f5e 100%);
+}
+.mode-btn.mode-v3 {
+    background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+}
+.mode-btn.mode-both {
+    background: linear-gradient(135deg, #2dd4bf 0%, #0d9488 100%);
+}
+.mode-btn.mode-translate {
+    background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+}
+
+.progress-dots {
+    background: rgba(236, 253, 245, .9);
+    box-shadow: inset 0 2px 6px rgba(15, 118, 110, .08);
+    border: 1px solid rgba(45, 212, 191, .2);
+}
+
+.dot {
+    background: #dbeafe;
+    border-color: #94a3b8;
+    color: #64748b;
+}
+.dot.current {
+    background: #fbbf24;
+    border-color: #fde68a;
+    color: #78350f;
+    box-shadow: 0 0 12px rgba(251, 191, 36, .4);
+}
+.dot.correct {
+    background: linear-gradient(135deg, #34d399 0%, #0d9488 100%);
+    border-color: #5eead4;
+}
+.dot.wrong {
+    background: linear-gradient(135deg, #fb7185 0%, #e11d48 100%);
+    border-color: #fda4af;
+}
+.dot.review {
+    background: #8b5cf6;
+    border-color: #c4b5fd;
+}
+
+.streak-counter {
+    background: rgba(255, 255, 255, .97);
+    box-shadow: 0 8px 25px rgba(15, 70, 80, .18);
+    border-color: #fb7185;
+}
+.streak-label { color: #64748b; }
+.streak-number {
+    color: #e11d48;
+    text-shadow: 0 0 15px rgba(225, 29, 72, .22);
+}
+
+.achievement-popup {
+    background: linear-gradient(135deg, #ffffff 0%, #ecfeff 100%);
+    box-shadow: 0 20px 60px rgba(15, 70, 80, .25), 0 0 40px rgba(45, 212, 191, .2);
+    border-color: #14b8a6;
+}
+.achievement-title {
+    color: #0f766e;
+    text-shadow: none;
+}
+.achievement-desc { color: #475569; }
+
+/* Исправление контраста задания на тёмной карточке */
+.question { color: #f8fafc; text-shadow: 0 1px 2px rgba(0, 0, 0, .35); }
+.question .translation { color: #99f6e4; }
+
+.answer-btn {
+    background: linear-gradient(135deg, #14b8a6 0%, #0f766e 100%);
+    color: white;
+    border-color: #99f6e4;
+    box-shadow: 0 5px 15px rgba(13, 148, 136, .24), inset 0 1px 2px rgba(255,255,255,.25);
+    text-shadow: 1px 1px 2px rgba(0,0,0,.18);
+}
+.answer-btn:hover {
+    background: linear-gradient(135deg, #2dd4bf 0%, #14b8a6 100%);
+    border-color: white;
+    box-shadow: 0 8px 20px rgba(13, 148, 136, .32), 0 0 15px rgba(45, 212, 191, .24);
+}
+
+.correct {
+    color: #059669;
+    text-shadow: 0 0 15px rgba(5, 150, 105, .22);
+}
+.incorrect {
+    color: #e11d48;
+    text-shadow: 0 0 15px rgba(225, 29, 72, .2);
+}
+
+.final-screen h2 {
+    color: #6ee7b7;
+    text-shadow: 0 0 12px rgba(110, 231, 183, .18);
+}
+.score-block {
+    background: linear-gradient(135deg, rgba(45, 212, 191, .11) 0%, rgba(251, 113, 133, .10) 100%);
+    box-shadow: inset 0 2px 6px rgba(15, 70, 80, .07);
+    border-color: rgba(20, 184, 166, .25);
+}
+.score-line { color: #f1f5f9; }
+.score-line strong, .percent {
+    color: #5eead4;
+}
+.percent {
+    text-shadow: 0 0 20px rgba(94, 234, 212, .25);
+}
+
+.achievements-block {
+    background: linear-gradient(135deg, rgba(45, 212, 191, .11) 0%, rgba(167, 139, 250, .10) 100%);
+    border-color: rgba(20, 184, 166, .28);
+}
+.achievements-title { color: #6ee7b7; }
+.achievement-badge {
+    background: rgba(255, 255, 255, .82);
+    box-shadow: 0 4px 12px rgba(15, 70, 80, .10);
+    border-color: rgba(20, 184, 166, .25);
+}
+.achievement-badge .badge-text { color: #334155; }
+
+.mistakes-block {
+    background: linear-gradient(135deg, rgba(251, 113, 133, .09) 0%, rgba(254, 202, 202, .14) 100%);
+    border-color: rgba(244, 63, 94, .22);
+}
+.mistakes-title { color: #e11d48; }
+.mistake-card {
+    background: rgba(255, 255, 255, .82);
+    box-shadow: 0 2px 6px rgba(15, 70, 80, .08);
+    border-left-color: #f43f5e;
+}
+.mistake-verb { color: #17324d; }
+.mistake-translation { color: #64748b; }
+.mistake-forms { color: #475569; }
+.mistake-forms .correct-form { color: #059669; }
+
+.no-mistakes {
+    background: linear-gradient(135deg, rgba(45, 212, 191, .12) 0%, rgba(167, 243, 208, .18) 100%);
+    border-color: rgba(20, 184, 166, .3);
+}
+.no-mistakes-text {
+    color: #059669;
+    text-shadow: none;
+}
+
+.play-again-btn {
+    background: linear-gradient(135deg, #14b8a6 0%, #0f766e 100%);
+    border-color: #5eead4;
+    box-shadow: 0 5px 15px rgba(13, 148, 136, .24);
+}
+.play-again-btn:hover {
+    background: linear-gradient(135deg, #2dd4bf 0%, #14b8a6 100%);
+    border-color: #99f6e4;
+    box-shadow: 0 8px 20px rgba(13, 148, 136, .32), 0 0 15px rgba(45, 212, 191, .22);
+}
+
+.mistakes-block::-webkit-scrollbar-track {
+    background: rgba(226, 232, 240, .7);
+}
+.mistakes-block::-webkit-scrollbar-thumb {
+    background: rgba(20, 184, 166, .5);
+}
+.mistakes-block::-webkit-scrollbar-thumb:hover {
+    background: rgba(20, 184, 166, .75);
+}
+
+.verb-map {
+    background: rgba(236, 253, 245, .72);
+    border-color: rgba(20, 184, 166, .22);
+}
+.verb-map-title { color: #0f766e; }
+.verb-map-summary { color: #64748b; }
+.verb-node {
+    border-color: #cbd5e1;
+    background: #ffffff;
+    color: #64748b;
+}
+.verb-node .verb-name { color: #17324d; }
+.verb-node .verb-detail { color: #64748b; }
+.verb-node.mastered {
+    background: rgba(16, 185, 129, .11);
+    border-color: #10b981;
+}
+.verb-node.training {
+    background: rgba(251, 191, 36, .13);
+    border-color: #f59e0b;
+}
+.verb-node.needs-review {
+    background: rgba(244, 63, 94, .10);
+    border-color: #f43f5e;
+}
+.verb-node.current-verb {
+    border-color: #0d9488;
+    box-shadow: 0 0 0 3px rgba(20, 184, 166, .12), 0 0 18px rgba(20, 184, 166, .22);
+}
+.verb-node.boss-target {
+    border-color: #8b5cf6;
+    box-shadow: 0 0 14px rgba(139, 92, 246, .2);
+}
+.verb-map-legend { color: #475569; }
+
+.hud-card {
+    background: rgba(236, 253, 245, .85);
+    border-color: rgba(20, 184, 166, .2);
+    color: #334155;
+}
+.hud-label { color: #64748b; }
+.hud-value { color: #0f766e; }
+.xp-track { background: #dbeafe; }
+.xp-bar {
+    background: linear-gradient(90deg, #14b8a6, #f43f5e);
+}
+
+.boss-banner {
+    background: rgba(139, 92, 246, .08);
+    color: #6d28d9;
+    border-color: rgba(139, 92, 246, .2);
+}
+
+.final-verb-map {
+    background: rgba(236, 253, 245, .58);
+    border-color: rgba(20, 184, 166, .2);
+}
+.final-map-subtitle { color: #64748b; opacity: 1; }
+
+
+
+        .start-instructions { max-width:760px; margin:0 auto 20px; padding:16px 20px; border:1px solid rgba(20,184,166,.28); border-radius:18px; background:rgba(236,253,245,.92); color:#24445a; text-align:left; line-height:1.5; box-shadow:0 5px 16px rgba(15,70,80,.08); }
+        .start-instructions summary { margin:0; color:#0f766e; font-size:1.08em; font-weight:800; cursor:pointer; list-style:none; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+        .start-instructions summary::-webkit-details-marker { display:none; }
+        .start-instructions summary::after { content:'＋'; font-size:1.25em; line-height:1; }
+        .start-instructions[open] summary { margin-bottom:8px; }
+        .start-instructions[open] summary::after { content:'−'; }
+        .start-instructions .instruction-content p { margin:5px 0; }
+        .start-instructions .certificate-rule { margin-top:10px; padding:10px 12px; border-radius:12px; background:#fff7d6; border-left:4px solid #f59e0b; color:#713f12; }
+        @media (max-width:600px) { .start-instructions { padding:13px 14px; font-size:.94em; } }
+
+/* ===== 4-LEVEL COURSE + CERTIFICATE ===== */
+.course-level-badge{display:inline-block;font-size:.68em;font-weight:900;background:rgba(255,255,255,.22);padding:5px 10px;border-radius:999px;margin-bottom:7px}
+.course-progress{margin:24px 0 0;padding:18px;border-radius:22px;background:rgba(236,253,245,.75);border:1px solid rgba(20,184,166,.22)}
+.course-progress-title{color:#0f766e;font-size:1.15em;font-weight:900;margin-bottom:12px}
+.course-level-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.course-level-card{background:#fff;border:2px solid #e2e8f0;border-radius:16px;padding:12px;text-align:left}
+.course-level-card.done{border-color:#10b981;background:rgba(16,185,129,.07)}
+.course-level-card .level-name{font-weight:900;color:#17324d;font-size:.92em}
+.course-level-card .level-result{margin-top:4px;color:#64748b;font-size:.82em}
+.course-level-card.done .level-result{color:#059669;font-weight:700}
+.certificate-block{margin:24px 0 10px;padding:22px;border-radius:24px;background:linear-gradient(135deg,rgba(253,164,175,.12),rgba(45,212,191,.12),rgba(192,132,252,.10));border:2px solid rgba(110,231,183,.35)}
+.certificate-title{color:#fda4af;font-size:1.45em;font-weight:900;margin-bottom:8px}
+.certificate-subtitle{color:#d1fae5;line-height:1.45;margin-bottom:16px}
+.certificate-form{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.certificate-input{flex:1 1 240px;min-width:220px;padding:15px 16px;border:2px solid #99f6e4;border-radius:14px;font:inherit;color:#17324d;background:#fff;outline:none}
+.certificate-input:focus{border-color:#0d9488;box-shadow:0 0 0 4px rgba(20,184,166,.10)}
+.certificate-btn{border:none;border-radius:14px;padding:15px 22px;font:inherit;font-weight:900;color:#fff;background:linear-gradient(135deg,#14b8a6,#0f766e);cursor:pointer;box-shadow:0 5px 15px rgba(13,148,136,.22)}
+.certificate-btn:hover{transform:translateY(-2px)}
+.certificate-locked{color:#d1fae5;background:rgba(255,255,255,.08);border:1px solid rgba(110,231,183,.22);border-radius:16px;padding:14px}
+.certificate-note{margin-top:10px;color:#a7f3d0;font-size:.82em}
+@media(max-width:520px){.course-level-list{grid-template-columns:1fr}.certificate-form{flex-direction:column}.certificate-input,.certificate-btn{width:100%}}
+
+
+        /* Обновлённая цветовая схема для набора 1–40 */
+        body {
+            background: linear-gradient(135deg, #123b35 0%, #176b62 52%, #2a8a78 100%);
+        }
+        .container {
+            background: rgba(18, 49, 46, 0.97);
+            border-color: rgba(110, 231, 183, 0.28);
+            box-shadow: 0 20px 60px rgba(3, 25, 23, 0.45), 0 0 38px rgba(45, 212, 191, 0.12);
+        }
+        h1 { color: #fda4af; text-shadow: 0 0 18px rgba(253, 164, 175, 0.25); }
+        .subtitle, .game-subtitle { color: #a7f3d0; }
+        .mode-title { color: #fde68a; }
+        .mode-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .mode-btn {
+            padding: 9px 10px;
+            border-radius: 13px;
+            font-size: .94em;
+            min-width: 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, .24);
+        }
+        .mode-btn:hover { transform: translateY(-2px); }
+        .mode-btn .mode-emoji { font-size: 1em; }
+        .mode-btn .mode-desc { font-size: .66em; line-height: 1.25; }
+        .mode-btn.mode-v2 { background: linear-gradient(135deg, #fb7185, #e11d48); }
+        .mode-btn.mode-v3 { background: linear-gradient(135deg, #38bdf8, #0369a1); }
+        .mode-btn.mode-both { background: linear-gradient(135deg, #a3e635, #4d7c0f); }
+        .mode-btn.mode-translate { background: linear-gradient(135deg, #c084fc, #7e22ce); }
+        @media (max-width: 420px) {
+            .container { padding: 22px 16px; }
+            .mode-buttons { gap: 8px; }
+            .mode-btn { padding: 8px 6px; font-size: .88em; }
+            .mode-btn .mode-desc { font-size: .62em; }
+        }
+
+
+/* NEW PALETTE: graphite + acid lime + vivid orange */
+body { background: radial-gradient(ellipse at top, #34383d 0%, #17191c 72%); color: #f4f1e8; }
+.container, .game-container, .screen, .card, .mode-card, .question-card, .panel { background-color: #25282c !important; color: #f4f1e8; border-color: #4b5056 !important; }
+h1, h2, h3, .title, .logo, .screen-title { color: #d6ff3f !important; }
+p, label, .description, .subtitle, .muted, .hint { color: #d4d0c7; }
+button, .btn, .mode-btn, .answer-btn, .start-btn { background: linear-gradient(135deg, #d6ff3f, #a9d900) !important; color: #20231b !important; border-color: #d6ff3f !important; box-shadow: none; }
+button:hover, .btn:hover, .mode-btn:hover, .answer-btn:hover, .start-btn:hover { background: linear-gradient(135deg, #ff8a3d, #f25b35) !important; color: #fff !important; }
+input, select, textarea, .answer-option, .verb-card, .hud-card { background: #30343a !important; color: #f4f1e8 !important; border-color: #626970 !important; }
+.correct, .success, .feedback.correct { background: rgba(214,255,63,.13) !important; color: #d6ff3f !important; border-color: #d6ff3f !important; }
+.incorrect, .error, .feedback.incorrect { background: rgba(255,101,71,.14) !important; color: #ff8a70 !important; border-color: #ff6547 !important; }
+.progress, .progress-track, .xp-track { background: #454a50 !important; }
+.progress-bar, .xp-bar { background: linear-gradient(90deg, #d6ff3f, #ff8a3d) !important; }
+.badge, .level-badge { background: #ff8a3d !important; color: #201d19 !important; }
+
+/* Calm palette: warm stone, muted blue-grey, soft olive */
+:root { color-scheme: light; }
+body { background: #eeece7 !important; color: #454943 !important; }
+.container { background: #f8f7f3 !important; border: 1px solid #d8d5cc !important; box-shadow: 0 16px 42px rgba(65,68,61,.09) !important; }
+h1, .mode-title { color: #68776c !important; text-shadow: none !important; }
+.subtitle, .game-subtitle { color: #7b8278 !important; }
+.mode-btn.mode-v2 { background: #87988a !important; color: #fff !important; }
+.mode-btn.mode-v3 { background: #7e91a0 !important; color: #fff !important; }
+.mode-btn.mode-both { background: #a19aab !important; color: #fff !important; }
+.mode-btn.mode-translate { background: #b6a184 !important; color: #fff !important; }
+button, .play-again-btn { border-color: #d4d0c7 !important; }
+.course-progress, .start-instructions, .verb-map, .final-verb-map, .hud-card { background: #efeee8 !important; border-color: #ddd9d0 !important; color: #4d534c !important; }
+.course-progress-title, .verb-map-title, .hud-value { color: #68776c !important; }
+.course-level-card, .mistake-card, .achievement-badge, .verb-node { background: #fbfaf7 !important; border-color: #dedbd3 !important; }
+.course-level-card, .course-level-card *, .verb-node .verb-name, .mistake-verb { color: #4d534c !important; }
+.answer-btn, .answer-option, .option-btn { background-color: #fbfaf7 !important; color: #4d534c !important; border-color: #d8d5cc !important; }
+.answer-btn:hover, .answer-option:hover, .option-btn:hover { border-color: #87988a !important; box-shadow: 0 0 0 2px rgba(135,152,138,.12) !important; }
+.xp-track { background: #e1dfd7 !important; }
+.xp-bar { background: #87988a !important; }
+.correct { color: #5e8068 !important; }
+.incorrect { color: #a66f69 !important; }
+.play-again-btn { background: #7e91a0 !important; color: #fff !important; }
+
+
+/* Accessibility pass: stronger text/background contrast */
+body { color: #303842 !important; }
+.container { color: #303842 !important; }
+.container p, .container label, .container small, .container span,
+.subtitle, .game-subtitle, .description, .hint, .muted,
+.streak-label, .streak-number, .course-progress, .start-instructions,
+.verb-map, .final-verb-map, .hud-card, .course-level-card,
+.mistake-card, .achievement-badge, .verb-node, .question-text,
+.question, .feedback, .result-text, .stats, .stat-label {
+  color: #343b43 !important;
+}
+.container h1, .container h2, .container h3, .course-progress-title,
+.verb-map-title, .hud-value, .mode-title { color: #405b50 !important; text-shadow: none !important; }
+button, .btn, .mode-btn, .answer-btn, .answer-option, .option-btn,
+.play-again-btn, .start-btn {
+  color: #27352f !important;
+  text-shadow: none !important;
+}
+.mode-btn.mode-v2 { background: #dce7df !important; color: #294538 !important; border-color: #9db7a6 !important; }
+.mode-btn.mode-v3 { background: #dce5ee !important; color: #304b63 !important; border-color: #a7bacb !important; }
+.mode-btn.mode-both { background: #e7e1ee !important; color: #514461 !important; border-color: #bdb0ce !important; }
+.mode-btn.mode-translate { background: #eee4d8 !important; color: #604a34 !important; border-color: #cbb69d !important; }
+.answer-btn, .answer-option, .option-btn { background: #ffffff !important; color: #303842 !important; border-color: #c4ccd4 !important; }
+.answer-btn:disabled, .answer-option:disabled, .option-btn:disabled { opacity: 1 !important; }
+.correct, .feedback.correct { background: #e2efe5 !important; color: #245c38 !important; border-color: #83b394 !important; }
+.incorrect, .feedback.incorrect { background: #f5e5e3 !important; color: #843b35 !important; border-color: #d7a09a !important; }
+.badge, .level-badge { color: #303842 !important; }
+.streak-counter { color: #303842 !important; }
+.streak-counter * { text-shadow: none !important; }
+:focus-visible { outline: 3px solid #526f91 !important; outline-offset: 2px !important; }
+
+
+/* ===== CONTRAST FIX: readable results and achievement cards ===== */
+.final-screen, .final-screen * { text-shadow: none !important; }
+.final-screen h2 { color: #405b50 !important; }
+.score-block { background: linear-gradient(135deg, #e7f3ed 0%, #f4eceb 100%) !important; border-color: #c8dcd2 !important; }
+.score-line, .score-line span, .score-line label { color: #35443d !important; }
+.score-line strong, .percent { color: #087f75 !important; }
+.achievements-block { background: linear-gradient(135deg, #e7f3ed 0%, #eeeaf3 100%) !important; border-color: #b9dcd4 !important; }
+.achievements-title { color: #087f75 !important; }
+.achievement-badge { background: #fbfaf7 !important; border-color: #d8d5cc !important; }
+.achievement-badge .badge-text, .achievement-badge, .achievement-badge * { color: #35443d !important; }
+.final-verb-map, .final-verb-map * { color: #35443d; }
+.final-map-title { color: #405b50 !important; }
+.final-map-subtitle { color: #59665e !important; }
+
+
+
+/* ===== FINAL ACCESSIBLE PALETTE: sky blue + navy + turquoise ===== */
+:root { color-scheme: light; }
+body {
+  background: radial-gradient(circle at 8% 4%, #d9edff 0, transparent 30%),
+              radial-gradient(circle at 95% 90%, #d8f7f1 0, transparent 28%),
+              linear-gradient(135deg, #eef7ff 0%, #f7fbff 55%, #eaf8f7 100%) !important;
+  color: #102a56 !important;
+}
+.container, .game-container, .screen, .card, .mode-card, .question-card, .panel {
+  background: #ffffff !important; color: #102a56 !important;
+  border-color: #b9dcf7 !important;
+  box-shadow: 0 12px 32px rgba(23, 71, 120, .10) !important;
+}
+h1, h2, h3, .title, .logo, .screen-title, .mode-title { color: #12316b !important; text-shadow: none !important; }
+p, label, .description, .subtitle, .muted, .hint, .game-subtitle { color: #405675 !important; }
+.question, #question, .question-text, .question div { color: #102a56 !important; }
+.question .translation, .translation, .mistake-translation {
+  color: #075985 !important; background: #e0f2fe !important;
+  border: 1px solid #93c5fd !important; border-radius: 10px;
+  padding: 5px 9px; font-weight: 800 !important; opacity: 1 !important;
+}
+.question strong { color: #102a56 !important; }
+button, .btn, .mode-btn, .answer-btn, .answer-option, .option-btn, .start-btn, .play-again-btn {
+  color: #102a56 !important; text-shadow: none !important;
+  border-color: #a9cbe9 !important;
+}
+.mode-btn.mode-v2 { background: #dceeff !important; color: #12316b !important; }
+.mode-btn.mode-v3 { background: #d9f5ee !important; color: #145748 !important; }
+.mode-btn.mode-both { background: #e5e9ff !important; color: #373b82 !important; }
+.mode-btn.mode-translate { background: #fff0d8 !important; color: #78420c !important; }
+.answer-btn, .answer-option, .option-btn { background: #fff !important; color: #102a56 !important; border: 2px solid #b9d7f0 !important; }
+.answer-btn:hover, .answer-option:hover, .option-btn:hover { background: #e0f2fe !important; border-color: #0891b2 !important; }
+input, select, textarea { background: #fff !important; color: #102a56 !important; border-color: #a9cbe9 !important; }
+.course-progress, .start-instructions, .verb-map, .final-verb-map, .hud-card {
+  background: #edf6ff !important; border-color: #c2def5 !important; color: #203b60 !important;
+}
+.course-level-card, .mistake-card, .achievement-badge, .verb-node { background: #fff !important; border-color: #cbdff0 !important; }
+.course-level-card, .course-level-card *, .verb-node .verb-name, .mistake-verb { color: #203b60 !important; }
+.course-progress-title, .verb-map-title, .hud-value { color: #087f8c !important; }
+.correct, .feedback.correct { background: #dcfce7 !important; color: #166534 !important; border-color: #86d4a0 !important; }
+.incorrect, .feedback.incorrect { background: #fee2e2 !important; color: #991b1b !important; border-color: #f3a5a5 !important; }
+.xp-track { background: #dbeafe !important; }
+.xp-bar { background: linear-gradient(90deg, #06b6d4, #0d9488) !important; }
+.badge, .level-badge { background: #dbeafe !important; color: #12316b !important; }
+.final-screen, .final-screen * { text-shadow: none !important; }
+.final-screen h2 { color: #12316b !important; }
+.score-line, .score-line span, .score-line label { color: #203b60 !important; }
+.score-line strong, .percent, .achievements-title { color: #087f8c !important; }
+:focus-visible { outline: 3px solid #0284c7 !important; outline-offset: 3px !important; }
+
+
+
+/* Contrast fix: keep verb and translation text dark in every answer state */
+#question, #question div, #question strong,
+#question .translation, .translation {
+  color: #12316b !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+#question strong { font-weight: 800 !important; }
+.answer-btn, .answer-btn:focus, .answer-btn:hover,
+.answer-btn:disabled, .answer-option, .option-btn {
+  color: #12316b !important;
+  -webkit-text-fill-color: #12316b !important;
+  opacity: 1 !important;
+}
+.answer-btn:disabled { cursor: default; }
+
+
+
+/* ===== ЦВЕТОВАЯ СХЕМА: PLUM ARCADE ===== */
+body {
+    background:
+        radial-gradient(circle at 14% 14%, rgba(168, 85, 247, .20), transparent 30%),
+        radial-gradient(circle at 86% 82%, rgba(217, 249, 157, .10), transparent 32%),
+        linear-gradient(135deg, #10091b 0%, #1b1029 50%, #241238 100%);
+    color: #f5f3ff;
+}
+.container {
+    background: rgba(25, 15, 39, .97);
+    border: 1px solid rgba(192, 132, 252, .28);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, .46), 0 0 35px rgba(168, 85, 247, .09);
+}
+h1, .mode-title { color: #d8b4fe; text-shadow: 0 0 16px rgba(192, 132, 252, .14); }
+.subtitle, .game-subtitle { color: #c4b5d8; }
+.mode-btn { box-shadow: 0 6px 18px rgba(0, 0, 0, .28); }
+.mode-btn.mode-v2 { background: linear-gradient(135deg, #7e22ce 0%, #581c87 100%); }
+.mode-btn.mode-v3 { background: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%); }
+.mode-btn.mode-both { background: linear-gradient(135deg, #4d7c0f 0%, #365314 100%); }
+.mode-btn.mode-translate { background: linear-gradient(135deg, #6b21a8 0%, #4c1d95 100%); }
+.progress-dots { background: rgba(16, 9, 27, .86); border-color: rgba(192, 132, 252, .18); }
+.dot { background: #30213f; border-color: #5b456d; color: #e9d5ff; }
+.dot.current { background: #4d7c0f; border-color: #d9f99d; color: #f7fee7; }
+.dot.correct { background: linear-gradient(135deg, #4d7c0f, #365314); border-color: #a3e635; color: white; }
+.dot.wrong { background: linear-gradient(135deg, #9f1239, #881337); border-color: #fb7185; color: white; }
+.dot.review { background: #6b21a8; border-color: #c084fc; color: white; }
+.streak-counter { background: #21132f; box-shadow: 0 8px 25px rgba(0, 0, 0, .3); border-color: #a855f7; }
+.streak-label { color: #c4b5d8; }
+.streak-number { color: #d9f99d; text-shadow: none; }
+.achievement-popup { background: linear-gradient(135deg, #21132f, #2c1940); border-color: #a855f7; }
+.achievement-title { color: #d8b4fe; }
+.achievement-desc { color: #e9d5ff; }
+.answer-btn { background: linear-gradient(135deg, #6b21a8 0%, #581c87 100%); border-color: #c084fc; box-shadow: 0 5px 15px rgba(0, 0, 0, .22); color: #fff !important; }
+.answer-btn:hover { background: linear-gradient(135deg, #7e22ce 0%, #6b21a8 100%); }
+.correct { color: #d9f99d; text-shadow: none; }
+.incorrect { color: #fda4af; text-shadow: none; }
+.final-screen h2, .achievements-title { color: #d8b4fe; text-shadow: none; }
+.score-block, .achievements-block, .final-verb-map { background: rgba(16, 9, 27, .58); border-color: rgba(192, 132, 252, .20); }
+.score-line { color: #f5f3ff; }
+.score-line strong, .percent { color: #d9f99d; text-shadow: none; }
+.achievement-badge { background: #30213f; color: #f5f3ff; border-color: rgba(192, 132, 252, .25); }
+.boss-banner { background: rgba(91, 33, 182, .22); color: #e9d5ff; border-color: rgba(192, 132, 252, .34); }
+/* Keep quiz text readable on the dark plum background. */
+#question, #question div, #question strong, #question .translation,
+.question, .question div, .question strong, .question .translation,
+.translation, .mistake-translation { color: #f5f3ff !important; opacity: 1 !important; text-shadow: none !important; }
+#question .translation, .question .translation, .translation, .mistake-translation { color: #d9f99d !important; }
+button, .btn, .mode-btn, .answer-btn, .answer-option, .option-btn, .start-btn, .play-again-btn { color: #fff !important; text-shadow: none !important; }
+
+
+
+/* Improve quiz prompt contrast: keep the task clearly readable on every theme. */
+#question {
+  color: #1e2f50 !important;
+  -webkit-text-fill-color: #1e2f50 !important;
+  background: #eef4ff !important;
+  border: 2px solid #b8c9eb !important;
+  border-radius: 16px !important;
+  padding: 16px 18px !important;
+  margin: 18px 0 24px !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+#question > div:first-child,
+#question > div:first-child *,
+#question strong {
+  color: #1e2f50 !important;
+  -webkit-text-fill-color: #1e2f50 !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+  font-weight: 800 !important;
+}
+#question .translation, #question .translation * {
+  color: #315b83 !important;
+  -webkit-text-fill-color: #315b83 !important;
+  background: #dcecff !important;
+  border-color: #a9c9ed !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+
+/* Улучшенная читаемость счётчика серии в правом верхнем углу */
+.streak-counter,
+.streak-counter.active {
+  background: linear-gradient(135deg, #21132f 0%, #35204b 100%) !important;
+  border: 2px solid #a855f7 !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, .30) !important;
+}
+.streak-counter .streak-label {
+  color: #f3e8ff !important;
+  -webkit-text-fill-color: #f3e8ff !important;
+  font-weight: 700 !important;
+  text-shadow: none !important;
+}
+.streak-counter .streak-number,
+.streak-counter #streak-number {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  font-weight: 800 !important;
+  text-shadow: none !important;
+}
+
+</style>
+
+<style id="high-contrast-final-fix">
+/* High-contrast text on certificate's pale background */
+.certificate-title { color: #9f1239 !important; text-shadow: none !important; }
+.certificate-subtitle { color: #263b52 !important; font-weight: 700 !important; opacity: 1 !important; text-shadow: none !important; }
+.certificate-note { color: #334155 !important; font-weight: 700 !important; opacity: 1 !important; text-shadow: none !important; }
+.certificate-locked { color: #263b52 !important; background: rgba(255,255,255,.75) !important; border-color: #94a3b8 !important; }
+.certificate-input { color: #183153 !important; background: #fff !important; border: 2px solid #7c9bbd !important; }
+.certificate-input::placeholder { color: #52677d !important; opacity: 1 !important; }
+/* Russian translation in the first three quiz modes */
+.question .translation, .translation, .mistake-translation { color: #164e63 !important; font-weight: 800 !important; text-shadow: none !important; opacity: 1 !important; }
+
+/* ===== Обновлённая палитра: мягкий лавандовый + небесно-голубой ===== */
+body { background: radial-gradient(circle at 10% 8%, #e9e2ff 0, transparent 32%), radial-gradient(circle at 92% 88%, #d9f0ff 0, transparent 30%), linear-gradient(135deg,#f7f4ff,#edf7ff) !important; color:#263653 !important; }
+.container { background:#fff !important; border:2px solid #d8d0f0 !important; box-shadow:0 18px 48px rgba(72,64,120,.13) !important; }
+.container h1,.container h2,.mode-title { color:#51427c !important; text-shadow:none !important; }
+.subtitle,.game-subtitle { color:#65718a !important; }
+.mode-btn.mode-v2 { background:linear-gradient(135deg,#a78bfa,#8065c9) !important; color:#fff !important; }
+.mode-btn.mode-v3 { background:linear-gradient(135deg,#7dd3fc,#3989bd) !important; color:#163b59 !important; }
+.mode-btn.mode-both { background:linear-gradient(135deg,#86d6c0,#399b83) !important; color:#123f37 !important; }
+.mode-btn.mode-translate { background:linear-gradient(135deg,#ffc98d,#e99b62) !important; color:#57351f !important; }
+.answer-btn { background:linear-gradient(135deg,#e9e3ff,#dcecff) !important; color:#263653 !important; border:2px solid #bdb0e8 !important; }
+.answer-btn:hover { background:linear-gradient(135deg,#d9d0ff,#c9e8ff) !important; border-color:#8d7bc7 !important; }
+.course-progress,.start-instructions,.verb-map,.final-verb-map,.hud-card { background:#f3f0fb !important; border-color:#d9d1ef !important; color:#35415c !important; }
+.course-progress-title,.verb-map-title,.hud-value { color:#51427c !important; }
+.question,.question div,.question strong { color:#263653 !important; text-shadow:none !important; }
+.question .translation,.translation,.mistake-translation { color:#536d9a !important; background:#eaf3ff !important; }
+.certificate-block { background:linear-gradient(135deg,#eee9ff,#e2f4ff) !important; border:2px solid #b9a9e5 !important; }
+.certificate-title { color:#51427c !important; }
+.certificate-subtitle,.certificate-note { color:#40516f !important; }
+.certificate-locked { color:#40516f !important; background:#fff !important; border-color:#c9c0e5 !important; }
+.certificate-btn,.play-again-btn { background:linear-gradient(135deg,#8065c9,#4e8dbb) !important; color:#fff !important; border-color:#b9c8ee !important; }
+
+
+
+/* Improve quiz prompt contrast: keep the task clearly readable on every theme. */
+#question {
+  color: #1e2f50 !important;
+  -webkit-text-fill-color: #1e2f50 !important;
+  background: #eef4ff !important;
+  border: 2px solid #b8c9eb !important;
+  border-radius: 16px !important;
+  padding: 16px 18px !important;
+  margin: 18px 0 24px !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+#question > div:first-child,
+#question > div:first-child *,
+#question strong {
+  color: #1e2f50 !important;
+  -webkit-text-fill-color: #1e2f50 !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+  font-weight: 800 !important;
+}
+#question .translation, #question .translation * {
+  color: #315b83 !important;
+  -webkit-text-fill-color: #315b83 !important;
+  background: #dcecff !important;
+  border-color: #a9c9ed !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+
+/* Контраст задания: тёмный текст на светлой лавандовой карточке */
+#question, .question {
+  display: block !important;
+  background: linear-gradient(135deg, #f0eaff 0%, #e6f2ff 100%) !important;
+  border: 2px solid #b9a9e5 !important;
+  border-radius: 16px !important;
+  padding: 18px 20px !important;
+  margin: 18px 0 24px !important;
+  color: #263653 !important;
+  -webkit-text-fill-color: #263653 !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+  font-weight: 700 !important;
+}
+#question *, .question * {
+  color: #263653 !important;
+  -webkit-text-fill-color: #263653 !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+#question strong, .question strong {
+  color: #34245f !important;
+  -webkit-text-fill-color: #34245f !important;
+  font-weight: 900 !important;
+}
+#question .translation, .question .translation {
+  display: inline-block !important;
+  color: #315b83 !important;
+  -webkit-text-fill-color: #315b83 !important;
+  background: #dcecff !important;
+  border: 1px solid #a9c9ed !important;
+  border-radius: 9px !important;
+  padding: 5px 10px !important;
+  font-weight: 800 !important;
+}
+
+</style>
+
+<style id="winter-aurora-theme">
+:root { color-scheme: dark; }
+body {
+  background:
+    radial-gradient(ellipse at 18% 12%, rgba(125,211,252,.28), transparent 28%),
+    radial-gradient(ellipse at 82% 18%, rgba(167,139,250,.24), transparent 30%),
+    radial-gradient(circle, rgba(255,255,255,.78) 1px, transparent 1.8px) 0 0/46px 46px,
+    radial-gradient(circle, rgba(186,230,253,.65) 1px, transparent 1.8px) 20px 24px/67px 67px,
+    linear-gradient(160deg,#071a35 0%,#102e50 48%,#172c4a 100%) !important;
+  color:#eaf6ff !important;
+}
+.container {
+  background:rgba(9,28,53,.94) !important;
+  border:1px solid rgba(186,230,253,.42) !important;
+  box-shadow:0 22px 65px rgba(0,10,28,.48),0 0 35px rgba(125,211,252,.12) !important;
+}
+h1,.mode-title,.final-screen h2 { color:#bae6fd !important; text-shadow:0 0 18px rgba(125,211,252,.22) !important; }
+.subtitle,.game-subtitle,.streak-label { color:#c4dff4 !important; }
+.question { color:#102a46 !important; }
+.question .translation { color:#24577a !important; background:#e0f2fe !important; }
+.mode-btn.mode-v2 { background:linear-gradient(135deg,#2563eb,#1d4ed8) !important; }
+.mode-btn.mode-v3 { background:linear-gradient(135deg,#7c3aed,#6d28d9) !important; }
+.mode-btn.mode-both { background:linear-gradient(135deg,#0f9f9a,#0e7490) !important; }
+.mode-btn.mode-translate { background:linear-gradient(135deg,#64748b,#475569) !important; }
+.answer-btn { background:linear-gradient(135deg,#dbeafe,#bae6fd) !important; color:#102a46 !important; border:2px solid #7dd3fc !important; }
+.answer-btn:hover { background:linear-gradient(135deg,#f0f9ff,#a5f3fc) !important; }
+.progress-dots,.verb-map,.game-hud .hud-card { background:rgba(15,43,73,.88) !important; border-color:rgba(125,211,252,.28) !important; }
+.dot { background:#244565 !important; border-color:#527797 !important; color:#e0f2fe !important; }
+.dot.current { background:#fbbf24 !important; color:#422006 !important; border-color:#fef3c7 !important; }
+.dot.correct { background:#0f766e !important; border-color:#5eead4 !important; }
+.dot.wrong { background:#be123c !important; border-color:#fda4af !important; }
+.dot.review { background:#6d28d9 !important; border-color:#c4b5fd !important; }
+.streak-counter { background:#102e50 !important; border-color:#7dd3fc !important; }
+.streak-number,.hud-value { color:#bae6fd !important; }
+/* Контрастные подписи и показатели игрового HUD */
+.game-hud .hud-label {
+  color:#ffffff !important;
+  -webkit-text-fill-color:#ffffff !important;
+  font-weight:900 !important;
+  font-size:.82em !important;
+  letter-spacing:.035em !important;
+  text-shadow:0 1px 3px rgba(0,8,24,.95) !important;
+}
+.game-hud .hud-value {
+  color:#fef08a !important;
+  -webkit-text-fill-color:#fef08a !important;
+  font-size:1.42em !important;
+  font-weight:900 !important;
+  text-shadow:0 2px 5px rgba(0,8,24,.95),0 0 10px rgba(250,204,21,.25) !important;
+}
+.game-hud .hud-value span {
+  color:#fef08a !important;
+  -webkit-text-fill-color:#fef08a !important;
+}
+.achievement-popup { background:linear-gradient(135deg,#102e50,#312e81) !important; border-color:#7dd3fc !important; }
+.achievement-title { color:#bae6fd !important; }
+.score-block,.achievements-block,.final-verb-map { background:rgba(15,43,73,.88) !important; border-color:rgba(125,211,252,.3) !important; }
+.score-line,.score-line span,.score-line label,.achievement-badge .badge-text { color:#eaf6ff !important; }
+.score-line strong,.percent,.achievements-title { color:#bae6fd !important; }
+.achievement-badge,.verb-node,.mistake-card { background:#173858 !important; border-color:#527797 !important; }
+.verb-node .verb-name,.mistake-verb { color:#f0f9ff !important; }
+.verb-node .verb-detail,.mistake-translation,.mistake-forms { color:#c4dff4 !important; }
+.course-progress,.start-instructions { background:#eaf6ff !important; color:#183653 !important; border-color:#9bc8e8 !important; }
+.course-progress-title,.verb-map-title { color:#075985 !important; }
+.course-level-card { background:#fff !important; border-color:#b6d5ec !important; }
+.course-level-card * { color:#183653 !important; }
+.correct { color:#0f766e !important; }
+.incorrect { color:#be123c !important; }
+.play-again-btn { background:linear-gradient(135deg,#0e7490,#1d4ed8) !important; color:#fff !important; border-color:#7dd3fc !important; }
+.certificate-block { background:linear-gradient(135deg,rgba(30,64,175,.22),rgba(14,116,144,.22)) !important; border-color:rgba(125,211,252,.5) !important; }
+.certificate-title { color:#bae6fd !important; }
+.certificate-subtitle,.certificate-note { color:#e0f2fe !important; }
+@media(max-width:600px){ body { background-attachment:fixed; } }
+</style>
+
+<style id="readable-winter-typography">
+/* Более чёткая типографика: хорошо читается и кириллица, и латиница */
+body, button, input, select, textarea {
+  font-family: Arial, "Helvetica Neue", sans-serif !important;
+}
+.container h1 {
+  color: #f0f9ff !important;
+  -webkit-text-fill-color: #f0f9ff !important;
+  font-weight: 800 !important;
+  text-shadow: 0 2px 4px rgba(0, 8, 24, .85), 0 0 14px rgba(125, 211, 252, .28) !important;
+}
+.container .subtitle,
+.container .game-subtitle {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  font-family: Arial, "Helvetica Neue", sans-serif !important;
+  font-size: 1.22em !important;
+  font-weight: 800 !important;
+  font-style: normal !important;
+  letter-spacing: .025em !important;
+  line-height: 1.45 !important;
+  opacity: 1 !important;
+  text-shadow: 0 2px 4px rgba(0, 8, 24, .9) !important;
+}
+</style>
+
+</head>
+<body>
+    <!-- Счётчик серии -->
+    <div class="streak-counter" id="streak-counter">
+        <div class="streak-label">Серия правильных ответов</div>
+        <div class="streak-number"><span class="streak-fire">🔥</span> <span id="streak-number">0</span></div>
+    </div>
+
+    <!-- Уведомление о достижении -->
+    <div class="achievement-popup" id="achievement-popup">
+        <div class="achievement-emoji" id="achievement-emoji"></div>
+        <div class="achievement-title" id="achievement-title"></div>
+        <div class="achievement-desc" id="achievement-desc"></div>
+    </div>
+
+    <div class="container">
+        <!-- Экран выбора режима -->
+        <div id="mode-screen" class="mode-screen">
+            <h1>🎓 Irregular Verbs Quiz</h1>
+            <p class="subtitle">глаголы 1-80</p>
+            
+            <details class="start-instructions" aria-label="Инструкция перед началом">
+                <summary>🚀 Как пройти тренажёр и получить сертификат</summary>
+                <div class="instruction-content">
+                    <p>• Выбери любой уровень и ответь на 25 вопросов. Старайся вспоминать формы самостоятельно, а не угадывать.</p>
+                    <p>• Уровни можно проходить <b>в любом порядке</b>. После каждого уровня увидишь свой результат и прогресс курса.</p>
+                    <p class="certificate-rule"><b>🏆 Когда выдаётся сертификат?</b><br>Сертификат станет доступен, когда будут пройдены <b>все 4 уровня</b> — в любом порядке. Затем введи имя и фамилию ученика и нажми кнопку сохранения сертификата в PDF. Идеальный результат не обязателен: главное — завершить каждый уровень. Ты справишься!</p>
+                </div>
+            </details>
+
+            <div class="mode-title">Выбери режим игры:</div>
+            
+            <div class="mode-buttons">
+                <button class="mode-btn mode-v2" onclick="startGame('v2')">
+                    <span class="course-level-badge">Уровень 1</span>
+                    <span class="mode-emoji">🍊</span>
+                    Только V2
+                    <span class="mode-desc">25 вопросов • вторая форма глагола</span>
+                </button>
+                
+                <button class="mode-btn mode-v3" onclick="startGame('v3')">
+                    <span class="course-level-badge">Уровень 2</span>
+                    <span class="mode-emoji">🌸</span>
+                    Только V3
+                    <span class="mode-desc">25 вопросов • третья форма глагола</span>
+                </button>
+                
+                <button class="mode-btn mode-both" onclick="startGame('both')">
+                    <span class="course-level-badge">Уровень 3</span>
+                    <span class="mode-emoji">🌿</span>
+                    V2 и V3
+                    <span class="mode-desc">25 вопросов • смешанный режим</span>
+                </button>
+
+                <button class="mode-btn mode-translate" onclick="startGame('translate')">
+                    <span class="course-level-badge">Уровень 4</span>
+                    <span class="mode-emoji">🦋</span>
+                    Перевод → форма
+                    <span class="mode-desc">25 вопросов • дан перевод, выбери форму</span>
+                </button>
+            </div>
+            <div class="course-progress">
+                <div class="course-progress-title">🎓 Прогресс курса</div>
+                <div id="courseProgressList" class="course-level-list"></div>
+            </div>
+        </div>
+
+        <!-- Экран игры -->
+        <div id="quiz-screen" class="hidden">
+            <h1>🎓 Irregular Verbs Quiz</h1>
+            <p class="game-subtitle">глаголы 1-80</p>
+            <p class="subtitle" id="current-mode-label"></p>
+            
+
+            <div class="game-hud">
+                <div class="hud-card">
+                    <div class="hud-label">Уровень</div>
+                    <div class="hud-value">⭐ <span id="level-number">1</span></div>
+                </div>
+                <div class="hud-card">
+                    <div class="hud-label">XP</div>
+                    <div class="hud-value"><span id="xp-number">0</span></div>
+                    <div class="xp-track"><div class="xp-bar" id="xp-bar"></div></div>
+                </div>
+                <div class="hud-card">
+                    <div class="hud-label">Комбо</div>
+                    <div class="hud-value">🔥 <span id="streak-number">0</span></div>
+                </div>
+            </div>
+
+            <div class="progress-dots" id="progress-dots"></div>
+<div class="question" id="question"></div>
+
+            <div class="answers" id="answers"></div>
+
+            <div class="feedback" id="feedback"></div>
+        </div>
+
+        <!-- Экран результатов -->
+        <div class="final-screen" id="final-screen">
+            <div class="emoji" id="final-emoji"></div>
+            <h2>Викторина завершена!</h2>
+            <div class="score-block">
+                <div class="score-line">✅ Верно с первого раза: <strong id="first-try-count"></strong></div>
+                <div class="score-line">📊 Результат:</div>
+                <div class="percent" id="final-percent"></div>
+                <div class="score-line">🔥 Лучшая серия: <strong id="best-streak"></strong></div>
+
+                <div class="score-line">⚡ XP за игру: <strong id="final-xp">0 XP</strong></div>
+                <div class="score-line">🏅 Лучший результат: <strong id="personal-best">0%</strong></div>
+
+            </div>
+
+            <!-- Достижения -->
+            <div id="achievements-container"></div>
+            
+            <!-- Разбор ошибок -->
+            
+            <div class="final-verb-map">
+                <div class="final-map-title">🗺️ Карта освоения глаголов</div>
+                <div class="final-map-subtitle">Что удалось освоить в этой игре.</div>
+                <div id="finalVerbMap" class="verb-map-grid final-map-grid"></div>
+                <div class="verb-map-legend final-map-legend">
+                    <span class="legend-item">🟢 освоен</span>
+                    <span class="legend-item">🟡 тренировка</span>
+                    <span class="legend-item">🔴 повторить</span>
+                    <span class="legend-item">⚪ не проверен</span>
+                </div>
+            </div>
+
+<div id="mistakes-container"></div>
+            
+            <div class="certificate-block" id="certificateBlock">
+                <div class="certificate-title">📜 Сертификат курса</div>
+                <div id="certificateContent"></div>
+            </div>
+
+            <button class="play-again-btn" onclick="backToMenu()">🔄 Выбрать другой режим</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        const TOTAL_QUESTIONS = 25;
+        const XP_PER_FIRST_TRY = 10;
+        const XP_PER_RETRY = 4;
+
+        const verbs = [
+            { base: 'be', v2: 'was / were', v3: 'been', translation: 'быть, находиться' },
+            { base: 'bear', v2: 'bore', v3: 'born / borne', translation: 'нести, родить' },
+            { base: 'beat', v2: 'beat', v3: 'beaten', translation: 'бить' },
+            { base: 'become', v2: 'became', v3: 'become', translation: 'становиться' },
+            { base: 'begin', v2: 'began', v3: 'begun', translation: 'начинать' },
+            { base: 'bite', v2: 'bit', v3: 'bitten', translation: 'кусать' },
+            { base: 'blow', v2: 'blew', v3: 'blown', translation: 'дуть' },
+            { base: 'break', v2: 'broke', v3: 'broken', translation: 'ломать' },
+            { base: 'bring', v2: 'brought', v3: 'brought', translation: 'приносить' },
+            { base: 'build', v2: 'built', v3: 'built', translation: 'строить' },
+            { base: 'burn', v2: 'burnt / burned', v3: 'burnt / burned', translation: 'жечь, гореть' },
+            { base: 'burst', v2: 'burst', v3: 'burst', translation: 'взрывать(ся)' },
+            { base: 'buy', v2: 'bought', v3: 'bought', translation: 'покупать' },
+            { base: 'can', v2: 'could', v3: 'been able to', translation: 'мочь; уметь' },
+            { base: 'catch', v2: 'caught', v3: 'caught', translation: 'ловить' },
+            { base: 'choose', v2: 'chose', v3: 'chosen', translation: 'выбирать' },
+            { base: 'come', v2: 'came', v3: 'come', translation: 'приходить' },
+            { base: 'cost', v2: 'cost', v3: 'cost', translation: 'стоить' },
+            { base: 'cut', v2: 'cut', v3: 'cut', translation: 'резать' },
+            { base: 'deal', v2: 'dealt', v3: 'dealt', translation: 'иметь дело' },
+            { base: 'dig', v2: 'dug', v3: 'dug', translation: 'копать' },
+            { base: 'do', v2: 'did', v3: 'done', translation: 'делать' },
+            { base: 'draw', v2: 'drew', v3: 'drawn', translation: 'рисовать, тащить' },
+            { base: 'dream', v2: 'dreamt / dreamed', v3: 'dreamt / dreamed', translation: 'мечтать' },
+            { base: 'drink', v2: 'drank', v3: 'drunk', translation: 'пить' },
+            { base: 'drive', v2: 'drove', v3: 'driven', translation: 'водить (машину и т.д.)' },
+            { base: 'eat', v2: 'ate', v3: 'eaten', translation: 'кушать; есть' },
+            { base: 'fall', v2: 'fell', v3: 'fallen', translation: 'падать' },
+            { base: 'feed', v2: 'fed', v3: 'fed', translation: 'кормить' },
+            { base: 'feel', v2: 'felt', v3: 'felt', translation: 'чувствовать' },
+            { base: 'fight', v2: 'fought', v3: 'fought', translation: 'сражаться; бороться' },
+            { base: 'find', v2: 'found', v3: 'found', translation: 'находить' },
+            { base: 'fly', v2: 'flew', v3: 'flown', translation: 'летать' },
+            { base: 'forget', v2: 'forgot', v3: 'forgotten', translation: 'забывать' },
+            { base: 'forbid', v2: 'forbade', v3: 'forbidden', translation: 'запрещать' },
+            { base: 'forgive', v2: 'forgave', v3: 'forgiven', translation: 'прощать' },
+            { base: 'freeze', v2: 'froze', v3: 'frozen', translation: 'замерзать' },
+            { base: 'get', v2: 'got', v3: 'got', translation: 'получать' },
+            { base: 'give', v2: 'gave', v3: 'given', translation: 'давать' },
+            { base: 'go', v2: 'went', v3: 'gone', translation: 'идти, ехать' },
+            { base: 'grow', v2: 'grew', v3: 'grown', translation: 'расти, выращивать' },
+            { base: 'hang', v2: 'hung / hanged', v3: 'hung / hanged', translation: 'вешать, висеть' },
+            { base: 'have', v2: 'had', v3: 'had', translation: 'иметь' },
+            { base: 'hear', v2: 'heard', v3: 'heard', translation: 'слышать' },
+            { base: 'hide', v2: 'hid', v3: 'hidden', translation: 'прятать(ся)' },
+            { base: 'hit', v2: 'hit', v3: 'hit', translation: 'ударять; попадать в цель' },
+            { base: 'hold', v2: 'held', v3: 'held', translation: 'держать' },
+            { base: 'hurt', v2: 'hurt', v3: 'hurt', translation: 'обижать, причинять боль' },
+            { base: 'keep', v2: 'kept', v3: 'kept', translation: 'хранить; содержать' },
+            { base: 'know', v2: 'knew', v3: 'known', translation: 'знать' },
+            { base: 'lead', v2: 'led', v3: 'led', translation: 'вести (лидировать)' },
+            { base: 'learn', v2: 'learnt / learned', v3: 'learnt / learned', translation: 'учить, обучаться, узнавать что-то новое' },
+            { base: 'leave', v2: 'left', v3: 'left', translation: 'оставлять, покидать' },
+            { base: 'lend', v2: 'lent', v3: 'lent', translation: 'одалживать (дать взаймы)' },
+            { base: 'let', v2: 'let', v3: 'let', translation: 'позволять, разрешать' },
+            { base: 'light', v2: 'lit', v3: 'lit', translation: 'зажигать, освещать' },
+            { base: 'lose', v2: 'lost', v3: 'lost', translation: 'терять, проигрывать' },
+            { base: 'make', v2: 'made', v3: 'made', translation: 'делать; производить' },
+            { base: 'mean', v2: 'meant', v3: 'meant', translation: 'означать, подразумевать' },
+            { base: 'meet', v2: 'met', v3: 'met', translation: 'встречать, знакомиться' },
+
+            { base: 'pay', v2: 'paid', v3: 'paid', translation: 'платить' },
+            { base: 'put', v2: 'put', v3: 'put', translation: 'класть' },
+            { base: 'read', v2: 'read', v3: 'read', translation: 'читать' },
+            { base: 'ride', v2: 'rode', v3: 'ridden', translation: 'ездить верхом' },
+            { base: 'ring', v2: 'rang', v3: 'rung', translation: 'звонить' },
+            { base: 'rise', v2: 'rose', v3: 'risen', translation: 'поднимать' },
+            { base: 'run', v2: 'ran', v3: 'run', translation: 'бежать; течь' },
+            { base: 'say', v2: 'said', v3: 'said', translation: 'говорить; сказать' },
+            { base: 'see', v2: 'saw', v3: 'seen', translation: 'видеть' },
+            { base: 'sell', v2: 'sold', v3: 'sold', translation: 'продавать' },
+            { base: 'send', v2: 'sent', v3: 'sent', translation: 'посылать, отправлять' },
+            { base: 'set', v2: 'set', v3: 'set', translation: 'устанавливать; настраивать' },
+            { base: 'sew', v2: 'sewed', v3: 'sewn', translation: 'шить' },
+            { base: 'shake', v2: 'shook', v3: 'shaken', translation: 'трясти' },
+            { base: 'shine', v2: 'shone', v3: 'shone', translation: 'сиять, светить' },
+            { base: 'shoot', v2: 'shot', v3: 'shot', translation: 'стрелять, снимать (фото, видео)' },
+            { base: 'show', v2: 'showed', v3: 'shown', translation: 'показывать' },
+            { base: 'shut', v2: 'shut', v3: 'shut', translation: 'закрывать, запирать' },
+            { base: 'sing', v2: 'sang', v3: 'sung', translation: 'петь' },
+            { base: 'sit', v2: 'sat', v3: 'sat', translation: 'сидеть' }
+        ];
+
+        const achievements = [
+            { id: 'streak5', streak: 5, emoji: '🥉', title: 'Комбо ×5', desc: '5 правильных ответов подряд' },
+            { id: 'streak10', streak: 10, emoji: '🥈', title: 'Комбо ×10', desc: '10 правильных ответов подряд' },
+            { id: 'streak15', streak: 15, emoji: '🥇', title: 'Комбо ×15', desc: '15 правильных ответов подряд' },
+            { id: 'streak20', streak: 20, emoji: '💎', title: 'Комбо ×20', desc: '20 правильных ответов подряд' },
+            { id: 'perfect', streak: 25, emoji: '🏆', title: 'Идеальная игра', desc: '25 ответов без ошибок' },
+            { id: 'xp100', xp: 100, emoji: '⚡', title: 'Мастер XP', desc: 'Набрано 100 XP за игру' }];
+
+        const modeLabels = {
+            v2: '🍊 Только V2',
+            v3: '🌸 Только V3',
+            both: '🌿 V2 и V3',
+            translate: '🦋 Перевод → форма'
+        };
+
+
+        // Четыре уровня курса = четыре режима игры.
+        const COURSE_LEVELS = [
+            { id: 'v2', number: 1, title: 'V2 — вторая форма' },
+            { id: 'v3', number: 2, title: 'V3 — третья форма' },
+            { id: 'both', number: 3, title: 'V2 + V3 — смешанный режим' },
+            { id: 'translate', number: 4, title: 'Перевод → форма' }
+        ];
+
+        function getCourseProgress() {
+            return loadProgress().courseLevels || {};
+        }
+
+        function saveCourseLevelResult(mode, percentValue) {
+            const data = loadProgress();
+            const courseLevels = { ...(data.courseLevels || {}) };
+            const old = courseLevels[mode] || {};
+            courseLevels[mode] = {
+                percent: Math.max(old.percent || 0, percentValue),
+                firstTry: Math.max(old.firstTry || 0, scoreFirstTry),
+                xp: Math.max(old.xp || 0, xp),
+                completedAt: new Date().toISOString()
+            };
+            saveProgress({ courseLevels });
+        }
+
+        function isCourseComplete() {
+            const course = getCourseProgress();
+            return COURSE_LEVELS.every(item => course[item.id]);
+        }
+
+        function renderCourseProgress() {
+            const container = document.getElementById('courseProgressList');
+            if (!container) return;
+            const course = getCourseProgress();
+            container.innerHTML = COURSE_LEVELS.map(item => {
+                const result = course[item.id];
+                return `<div class="course-level-card ${result ? 'done' : ''}">
+                    <div class="level-name">${result ? '✅' : '⬜'} Уровень ${item.number}</div>
+                    <div class="level-result">${result ? `${result.percent}% • ${result.firstTry}/${TOTAL_QUESTIONS} с первого раза` : 'ещё не пройден'}</div>
+                </div>`;
+            }).join('');
+        }
+
+        function renderCertificateBlock() {
+            const block = document.getElementById('certificateBlock');
+            const container = document.getElementById('certificateContent');
+            if (!block || !container) return;
+
+            // До завершения всех четырёх уровней блок сертификата не показываем.
+            if (!isCourseComplete()) {
+                block.style.display = 'none';
+                return;
+            }
+
+            block.style.display = 'block';
+            container.innerHTML = `<div class="certificate-subtitle">
+                🎉 Все 4 уровня пройдены! Введите имя ученика, чтобы скачать PDF-сертификат
+                с результатами каждого уровня и общим итогом.
+            </div>
+            <div class="certificate-form">
+                <input id="studentName" class="certificate-input" type="text" maxlength="80" placeholder="Имя и фамилия ученика">
+                <button class="certificate-btn" onclick="downloadCertificatePDF()">📜 Открыть сертификат / сохранить PDF</button>
+            </div>
+            <div class="certificate-note">📚 Изучены неправильные глаголы 1-80</div>`;
+        }
+
+        function getCourseAverage() {
+            const course = getCourseProgress();
+            return Math.round(COURSE_LEVELS.reduce((sum, item) => sum + (course[item.id]?.percent || 0), 0) / COURSE_LEVELS.length);
+        }
+
+        function certificateAchievement(percentValue) {
+            if (percentValue === 100) return 'Идеальное освоение!';
+            if (percentValue >= 90) return 'Отличное освоение материала!';
+            if (percentValue >= 75) return 'Очень хороший результат!';
+            return 'Отличный старт и уверенное продвижение!';
+        }
+
+        function downloadCertificatePDF() {
+            const input = document.getElementById('studentName');
+            const studentName = input ? input.value.trim() : '';
+            if (!studentName) {
+                alert('Пожалуйста, введите имя ученика.');
+                if (input) input.focus();
+                return;
+            }
+            if (!isCourseComplete()) {
+                alert('Сначала нужно пройти все 4 уровня.');
+                return;
+            }
+
+            const course = getCourseProgress();
+            const average = getCourseAverage();
+            const date = new Date().toLocaleDateString('ru-RU');
+            const levels = COURSE_LEVELS.map(item => {
+                const r = course[item.id] || {percent: 0, firstTry: 0, xp: 0};
+                return `<tr><td>Уровень ${item.number}: ${escapeCertificateHtml(item.title)}</td><td>${r.percent}%</td><td>${r.firstTry}/${TOTAL_QUESTIONS}</td><td>${r.xp} XP</td></tr>`;
+            }).join('');
+            const safeName = escapeCertificateHtml(studentName);
+            const achievement = certificateAchievement(average);
+            const printWindow = window.open('', '_blank');
+            if (!printWindow) {
+                alert('Браузер заблокировал новое окно. Разрешите всплывающие окна для этой страницы и нажмите кнопку ещё раз.');
+                return;
+            }
+            printWindow.document.open();
+            printWindow.document.write(`<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Сертификат — ${safeName}</title>
+<style>
+@page{size:A4 landscape;margin:0}*{box-sizing:border-box}body{margin:0;background:#211632;color:#30213f;font-family:Arial,"DejaVu Sans",sans-serif}.toolbar{padding:14px;text-align:center;background:#211632;color:#e9d5ff}.toolbar button{font-size:16px;font-weight:bold;padding:11px 20px;border:0;border-radius:9px;background:linear-gradient(135deg,#7e22ce,#6b21a8);color:white;cursor:pointer}.toolbar span{margin-left:12px;font-size:13px}.sheet{width:297mm;height:210mm;margin:18px auto;padding:10mm;background:#faf5ff;position:relative;overflow:hidden}.frame{height:100%;border:2.5px solid #7e22ce;border-radius:8mm;padding:7mm 15mm;text-align:center;position:relative;display:flex;flex-direction:column;justify-content:space-evenly;gap:1.5mm;box-shadow:inset 0 0 0 1.5mm rgba(217,249,157,.65)}.frame:before{content:"✦";position:absolute;left:13mm;top:12mm;font-size:26px;color:#a855f7}.frame:after{content:"✦";position:absolute;right:13mm;top:12mm;font-size:26px;color:#a3e635}.eyebrow{font-size:12px;letter-spacing:4px;text-transform:uppercase;color:#6b21a8;font-weight:bold;margin:0}.title{font-family:Georgia,serif;font-size:32pt;letter-spacing:3px;color:#581c87;margin:0}.subtitle{font-size:13pt;color:#5b4572;margin:0}.name{font-family:Georgia,serif;font-size:27pt;color:#30213f;border-bottom:1px solid #a855f7;display:inline-block;min-width:115mm;padding:0 12mm 2mm;margin:0 auto}.description{font-size:12pt;color:#5b4572;margin:0}.ribbon{display:inline-block;align-self:center;background:#ecfccb;border:1px solid #a3e635;border-radius:3mm;padding:3mm 12mm;color:#3f6212;font-size:13pt;font-weight:bold;margin:0}.results{width:100%;border-collapse:collapse;text-align:left;font-size:10.5pt;margin:0 auto}.results th{background:#e9d5ff;color:#581c87;padding:2.5mm}.results td{padding:2.5mm;border-bottom:1px solid #c4d2e8;color:#263653;font-weight:600}.results tbody tr:nth-child(even) td{background:#f3f6fc}.results th{font-weight:700}.results td:first-child{color:#1f3558;font-weight:700}.results th:not(:first-child),.results td:not(:first-child){text-align:center;white-space:nowrap}.total{font-size:18pt;font-weight:bold;color:#6b21a8;margin:0}.achievement{font-size:11pt;color:#5b4572}.foot{display:flex;justify-content:space-between;align-items:center;font-size:9pt;color:#6b6078;margin-top:0;padding-right:24mm}.foot strong{color:#6b21a8}.seal{position:absolute;right:17mm;bottom:14mm;width:23mm;height:23mm;border:1.5px solid #a3e635;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#65a30d;font-size:8pt;font-weight:bold;transform:rotate(-12deg)}@media print{body{background:white}.toolbar{display:none}.sheet{margin:0;box-shadow:none}}@media screen{.sheet{box-shadow:0 12px 36px #21163244}}
+
+
+/* ===== DISTINCT COLOR THEME: Arctic Night + Electric Coral ===== */
+:root { color-scheme: dark; }
+body {
+  background: radial-gradient(circle at 12% 12%, #164e63 0, transparent 32%),
+              radial-gradient(circle at 88% 86%, #7f1d1d 0, transparent 30%),
+              linear-gradient(135deg, #071923 0%, #102a43 52%, #24152f 100%) !important;
+  color: #f1f5f9;
+}
+.container {
+  background: linear-gradient(145deg, rgba(13, 35, 51, .98), rgba(29, 27, 48, .98)) !important;
+  border: 1px solid rgba(103, 232, 249, .32) !important;
+  box-shadow: 0 24px 70px rgba(0,0,0,.48), 0 0 35px rgba(34,211,238,.12) !important;
+}
+h1, .mode-title { color: #fb7185 !important; text-shadow: 0 0 22px rgba(251,113,133,.25) !important; }
+.subtitle, .game-subtitle { color: #67e8f9 !important; }
+.mode-btn.mode-v2 { background: linear-gradient(135deg, #fb7185, #be123c) !important; }
+.mode-btn.mode-v3 { background: linear-gradient(135deg, #22d3ee, #0e7490) !important; }
+.mode-btn.mode-both { background: linear-gradient(135deg, #c084fc, #7e22ce) !important; }
+.mode-btn.mode-translate { background: linear-gradient(135deg, #fbbf24, #b45309) !important; }
+button, .play-again-btn { border-color: rgba(103,232,249,.45); }
+.course-progress, .start-instructions, .verb-map, .final-verb-map, .hud-card {
+  background: rgba(8, 47, 73, .72) !important;
+  border-color: rgba(103,232,249,.25) !important;
+  color: #e2e8f0 !important;
+}
+.course-progress-title, .verb-map-title, .hud-value { color: #67e8f9 !important; }
+.course-level-card, .mistake-card, .achievement-badge, .verb-node {
+  background: rgba(15, 23, 42, .92) !important;
+  border-color: rgba(148,163,184,.3) !important;
+}
+.course-level-card, .course-level-card *, .verb-node .verb-name, .mistake-verb { color: #e2e8f0; }
+.answer-btn, .answer-option, .option-btn {
+  border-color: rgba(103,232,249,.28) !important;
+}
+.answer-btn:hover, .answer-option:hover, .option-btn:hover {
+  border-color: #fb7185 !important;
+  box-shadow: 0 0 0 2px rgba(251,113,133,.16) !important;
+}
+.xp-track { background: #164e63 !important; }
+.xp-bar { background: linear-gradient(90deg, #22d3ee, #fb7185) !important; }
+.correct { color: #5eead4 !important; }
+.incorrect { color: #fda4af !important; }
+.play-again-btn { background: linear-gradient(135deg, #0e7490, #be123c) !important; }
+@media (max-width: 600px) {
+  body { background-attachment: fixed; }
+  .container { border-radius: 22px !important; }
+}
+
+/* ===== NEW COLOR THEME: Warm Garden (ivory, forest, terracotta, lilac) ===== */
+:root { color-scheme: light; }
+body {
+  background: radial-gradient(circle at 8% 8%, #f5d8c5 0, transparent 31%),
+              radial-gradient(circle at 92% 88%, #d9d0ed 0, transparent 30%),
+              linear-gradient(135deg, #fffaf0 0%, #f2f5e9 54%, #f7e8df 100%) !important;
+  color: #263b32 !important;
+}
+.container {
+  background: linear-gradient(145deg, rgba(255,253,247,.98), rgba(240,246,233,.98)) !important;
+  border: 1px solid #c8d7c2 !important;
+  box-shadow: 0 24px 60px rgba(62,79,58,.16), 0 0 28px rgba(185,110,79,.08) !important;
+}
+h1, .mode-title { color: #a94f35 !important; text-shadow: none !important; }
+.subtitle, .game-subtitle { color: #52745d !important; }
+.mode-btn.mode-v2 { background: linear-gradient(135deg, #d87958, #a94f35) !important; }
+.mode-btn.mode-v3 { background: linear-gradient(135deg, #83a985, #456b50) !important; }
+.mode-btn.mode-both { background: linear-gradient(135deg, #b9a7d8, #8066a8) !important; }
+.mode-btn.mode-translate { background: linear-gradient(135deg, #e9c46a, #b88627) !important; }
+button, .play-again-btn { border-color: rgba(69,107,80,.38) !important; }
+.course-progress, .start-instructions, .verb-map, .final-verb-map, .hud-card {
+  background: rgba(232,240,225,.92) !important;
+  border-color: #c8d7c2 !important;
+  color: #344b3b !important;
+}
+.course-progress-title, .verb-map-title, .hud-value { color: #456b50 !important; }
+.course-level-card, .mistake-card, .achievement-badge, .verb-node {
+  background: #fffdf7 !important;
+  border-color: #d7dfcf !important;
+}
+.course-level-card, .course-level-card *, .verb-node .verb-name, .mistake-verb { color: #344b3b !important; }
+.answer-btn, .answer-option, .option-btn {
+  background-color: #fffdf7 !important;
+  color: #344b3b !important;
+  border-color: #c8d7c2 !important;
+}
+.answer-btn:hover, .answer-option:hover, .option-btn:hover {
+  border-color: #d87958 !important;
+  box-shadow: 0 0 0 2px rgba(216,121,88,.15) !important;
+}
+.xp-track { background: #dce7d5 !important; }
+.xp-bar { background: linear-gradient(90deg, #83a985, #d87958) !important; }
+.correct { color: #34764b !important; }
+.incorrect { color: #b4473b !important; }
+.play-again-btn { background: linear-gradient(135deg, #456b50, #d87958) !important; color: #fffdf7 !important; }
+@media (max-width: 600px) {
+  body { background-attachment: fixed; }
+  .container { border-radius: 22px !important; }
+}
+
+
+/* ===== Calm color theme: Soft Slate + Dusty Blue + Sage ===== */
+:root { color-scheme: light; }
+body {
+  background: linear-gradient(135deg, #e9edf2 0%, #e4e9ef 52%, #e9e7ed 100%) !important;
+  color: #303b49 !important;
+}
+.container {
+  background: #f8fafc !important;
+  border: 1px solid #cbd5df !important;
+  box-shadow: 0 18px 44px rgba(48,59,73,.10) !important;
+}
+h1, .mode-title { color: #536b86 !important; text-shadow: none !important; }
+.subtitle, .game-subtitle { color: #697d8d !important; }
+.mode-btn.mode-v2 { background: #7188a3 !important; color: #fff !important; }
+.mode-btn.mode-v3 { background: #829b8b !important; color: #fff !important; }
+.mode-btn.mode-both { background: #928aa8 !important; color: #fff !important; }
+.mode-btn.mode-translate { background: #c19b78 !important; color: #fff !important; }
+button, .play-again-btn { border-color: #c2ccd7 !important; }
+.course-progress, .start-instructions, .verb-map, .final-verb-map, .hud-card {
+  background: #edf1f5 !important;
+  border-color: #d1d9e2 !important;
+  color: #3f4c5a !important;
+}
+.course-progress-title, .verb-map-title, .hud-value { color: #536b86 !important; }
+.course-level-card, .mistake-card, .achievement-badge, .verb-node {
+  background: #fbfcfd !important;
+  border-color: #d8dfe7 !important;
+}
+.course-level-card, .course-level-card *, .verb-node .verb-name, .mistake-verb { color: #3f4c5a !important; }
+.answer-btn, .answer-option, .option-btn {
+  background-color: #fbfcfd !important;
+  color: #3f4c5a !important;
+  border-color: #cbd5df !important;
+}
+.answer-btn:hover, .answer-option:hover, .option-btn:hover {
+  border-color: #829b8b !important;
+  box-shadow: 0 0 0 2px rgba(130,155,139,.14) !important;
+}
+.xp-track { background: #dce3ea !important; }
+.xp-bar { background: linear-gradient(90deg, #829b8b, #7188a3) !important; }
+.correct { color: #47765b !important; }
+.incorrect { color: #a65f5a !important; }
+.play-again-btn { background: #7188a3 !important; color: #fff !important; }
+@media (max-width: 600px) { body { background-attachment: fixed; } .container { border-radius: 22px !important; } }
+
+
+
+/* FINAL READABILITY PATCH: force readable text on pale/white surfaces */
+.certificate-subtitle, .certificate-note {
+  color: #263b52 !important;
+  font-weight: 700 !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+.certificate-input {
+  color: #183153 !important;
+  -webkit-text-fill-color: #183153 !important;
+  background: #ffffff !important;
+  border: 2px solid #7c9bbd !important;
+}
+.certificate-input::placeholder { color: #52677d !important; opacity: 1 !important; }
+/* Russian translations in modes 1–3 and all answer/result states */
+.question .translation, #question .translation, .translation, .mistake-translation,
+.question .translation *, #question .translation *, .translation * {
+  color: #12316b !important;
+  -webkit-text-fill-color: #12316b !important;
+  background-color: #e0f2fe !important;
+  border-color: #7db8e8 !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+  font-weight: 800 !important;
+}
+/* Summary text and achievement captions should remain dark on light cards */
+.final-screen .score-line, .final-screen .score-line span,
+.final-screen .score-line label, .final-screen .achievement-badge .badge-text,
+.final-screen .achievements-title {
+  color: #203b60 !important;
+  -webkit-text-fill-color: #203b60 !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+.final-screen .score-line strong, .final-screen .percent,
+.final-screen .achievements-title { color: #087f75 !important; -webkit-text-fill-color: #087f75 !important; }
+
+
+/* ===== NEW DISTINCT THEME: Plum Arcade + Neon Lime + Lavender ===== */
+:root { color-scheme: dark; }
+body {
+  background:
+    radial-gradient(circle at 8% 10%, rgba(168, 85, 247, .28) 0, transparent 30%),
+    radial-gradient(circle at 92% 88%, rgba(190, 242, 100, .14) 0, transparent 27%),
+    linear-gradient(135deg, #160d24 0%, #241139 52%, #101b2d 100%) !important;
+  color: #f5f3ff !important;
+}
+.container {
+  background: linear-gradient(145deg, rgba(38, 20, 58, .98), rgba(22, 31, 49, .98)) !important;
+  border: 1px solid rgba(196, 181, 253, .36) !important;
+  box-shadow: 0 24px 70px rgba(0,0,0,.45), 0 0 36px rgba(168,85,247,.14) !important;
+}
+h1, .mode-title { color: #d9f99d !important; text-shadow: 0 0 20px rgba(217,249,157,.16) !important; }
+.subtitle, .game-subtitle, .streak-label { color: #d8b4fe !important; }
+.mode-btn.mode-v2 { background: linear-gradient(135deg, #a855f7, #6b21a8) !important; }
+.mode-btn.mode-v3 { background: linear-gradient(135deg, #d9f99d, #65a30d) !important; color: #1f2937 !important; text-shadow: none !important; }
+.mode-btn.mode-both { background: linear-gradient(135deg, #818cf8, #6d28d9) !important; }
+.mode-btn.mode-translate { background: linear-gradient(135deg, #f0abfc, #a21caf) !important; }
+button, .play-again-btn { border-color: rgba(196,181,253,.48) !important; }
+.course-progress, .start-instructions, .verb-map, .final-verb-map, .hud-card, .progress-dots {
+  background: rgba(25, 18, 43, .92) !important;
+  border-color: rgba(196,181,253,.24) !important;
+  color: #f5f3ff !important;
+}
+.course-progress-title, .verb-map-title, .hud-value, .streak-number { color: #d9f99d !important; }
+.course-level-card, .mistake-card, .achievement-badge, .verb-node {
+  background: #211632 !important;
+  border-color: rgba(196,181,253,.25) !important;
+}
+.course-level-card, .course-level-card *, .verb-node .verb-name, .mistake-verb { color: #f5f3ff !important; }
+.answer-btn, .answer-option, .option-btn {
+  background: #f5f3ff !important;
+  color: #2e1744 !important;
+  border-color: #c4b5fd !important;
+}
+.answer-btn:hover, .answer-option:hover, .option-btn:hover {
+  border-color: #a3e635 !important;
+  box-shadow: 0 0 0 2px rgba(163,230,53,.2) !important;
+}
+.xp-track { background: #3b2854 !important; }
+.xp-bar { background: linear-gradient(90deg, #a855f7, #a3e635) !important; }
+.dot { background: #312044 !important; border-color: #5b4572 !important; color: #d8b4fe !important; }
+.dot.current { background: #d9f99d !important; border-color: #ecfccb !important; color: #26330f !important; box-shadow: 0 0 14px rgba(217,249,157,.38) !important; }
+.dot.correct { background: linear-gradient(135deg, #a3e635, #65a30d) !important; border-color: #d9f99d !important; color: #1f2937 !important; }
+.dot.wrong { background: linear-gradient(135deg, #f0abfc, #c026d3) !important; border-color: #f5d0fe !important; }
+.streak-counter { background: #211632 !important; border-color: #a3e635 !important; }
+.achievement-popup { background: linear-gradient(135deg, #2e1744, #182238) !important; }
+.correct { color: #65a30d !important; }
+.incorrect { color: #be185d !important; }
+.play-again-btn { background: linear-gradient(135deg, #7e22ce, #4d7c0f) !important; color: #fff !important; }
+/* Keep translations and certificate fields readable against the new dark palette. */
+.question .translation, #question .translation, .translation, .mistake-translation,
+.question .translation *, #question .translation *, .translation * {
+  color: #3b1d55 !important;
+  -webkit-text-fill-color: #3b1d55 !important;
+  background-color: #f3e8ff !important;
+  border-color: #c4b5fd !important;
+}
+.certificate-subtitle, .certificate-note { color: #e9d5ff !important; }
+.certificate-input { color: #2e1744 !important; -webkit-text-fill-color: #2e1744 !important; background: #faf5ff !important; border-color: #c4b5fd !important; }
+.certificate-input::placeholder { color: #6b4a80 !important; }
+.final-screen .score-line, .final-screen .score-line span,
+.final-screen .score-line label, .final-screen .achievement-badge .badge-text,
+.final-screen .achievements-title { color: #f5f3ff !important; -webkit-text-fill-color: #f5f3ff !important; }
+.final-screen .score-line strong, .final-screen .percent,
+.final-screen .achievements-title { color: #d9f99d !important; -webkit-text-fill-color: #d9f99d !important; }
+@media (max-width: 600px) { body { background-attachment: fixed; } .container { border-radius: 22px !important; } }
+/* Certificate panel only: match the plum, lavender and lime quiz palette. */
+.certificate-block { background: linear-gradient(135deg, rgba(126,34,206,.18), rgba(217,249,157,.08)) !important; border-color: rgba(192,132,252,.5) !important; }
+.certificate-title { color: #d8b4fe !important; }
+.certificate-subtitle, .certificate-note { color: #e9d5ff !important; }
+.certificate-locked { color: #f5f3ff !important; background: rgba(46,23,68,.72) !important; border-color: rgba(192,132,252,.42) !important; }
+.certificate-btn { background: linear-gradient(135deg,#7e22ce,#6b21a8) !important; box-shadow: 0 5px 15px rgba(126,34,206,.25) !important; }
+.certificate-input { border-color: #c4b5fd !important; }
+
+
+/* Certificate palette: elegant lavender and sky blue */
+body{background:#eaf2fb;color:#263653}
+.toolbar{background:#334b70;color:#f3f6ff}
+.toolbar button{background:linear-gradient(135deg,#6d63a8,#397fa8);color:#fff}
+.sheet{background:#fbfcff}
+.frame{border-color:#687db4;box-shadow:inset 0 0 0 1.5mm rgba(125,184,218,.45)}
+.frame:before,.frame:after{color:#7c91c8}
+.eyebrow{color:#526a9b}
+.title{color:#173b70 !important;-webkit-text-fill-color:#173b70 !important;font-weight:900 !important;text-shadow:0 1px 0 #fff,0 2px 3px rgba(23,59,112,.16) !important}
+.subtitle{color:#183f68 !important;-webkit-text-fill-color:#183f68 !important;font-weight:800 !important;text-shadow:none !important;opacity:1 !important}
+.description,.achievement{color:#52627c}
+.name{color:#263653;border-bottom-color:#8da6d5}
+.ribbon{background:#e2f2fb;border-color:#8dbbd8;color:#245879}
+.results th{background:#e5e9f8;color:#354d83}
+.results td{border-bottom-color:#d9e3f1}
+.total,.foot strong{color:#526a9b}
+.foot{color:#64748b}
+.seal{border-color:#8dbbd8;color:#397fa8}
+
+
+
+/* Improve quiz prompt contrast: keep the task clearly readable on every theme. */
+#question {
+  color: #1e2f50 !important;
+  -webkit-text-fill-color: #1e2f50 !important;
+  background: #eef4ff !important;
+  border: 2px solid #b8c9eb !important;
+  border-radius: 16px !important;
+  padding: 16px 18px !important;
+  margin: 18px 0 24px !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+#question > div:first-child,
+#question > div:first-child *,
+#question strong {
+  color: #1e2f50 !important;
+  -webkit-text-fill-color: #1e2f50 !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+  font-weight: 800 !important;
+}
+#question .translation, #question .translation * {
+  color: #315b83 !important;
+  -webkit-text-fill-color: #315b83 !important;
+  background: #dcecff !important;
+  border-color: #a9c9ed !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+</style></head><body><div class="toolbar"><button onclick="window.print()">🖨️ Печать / сохранить как PDF</button><span>В окне печати выберите «Сохранить как PDF».</span></div>
+<main class="sheet"><section class="frame"><p class="eyebrow">Certificate of Achievement</p><h1 class="title">СЕРТИФИКАТ</h1><p class="subtitle">об успешном прохождении курса Irregular Verbs Quiz</p><div class="name">${safeName}</div><p class="description">успешно завершил(а) все 4 уровня курса</p><div class="ribbon">📚 Изучены неправильные глаголы 1-80</div><table class="results"><thead><tr><th>Уровень курса</th><th>Результат</th><th>С первого раза</th><th>Опыт</th></tr></thead><tbody>${levels}</tbody></table><div class="total">Итоговый результат: ${average}%</div><div class="achievement">${escapeCertificateHtml(achievement)}</div><div class="foot"><span>Дата выдачи: <strong>${date}</strong></span><span><strong>Irregular Verbs Quiz</strong> · 80 irregular verbs</span></div><div class="seal">AWARD<br>★</div></section></main></body></html>`);
+            printWindow.document.close();
+            printWindow.focus();
+        }
+
+        function escapeCertificateHtml(value) {
+            return String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+        }
+
+        let currentMode = 'both';
+        let currentQuestionIndex = 0;
+        let scoreFirstTry = 0;
+        let questions = [];
+        let currentVerb = null;
+        let currentForm = null;
+        let correctAnswer = '';
+        let firstAttempt = true;
+        let dotStates = [];
+        let mistakes = [];
+        let currentStreak = 0;
+        let bestStreak = 0;
+        let earnedAchievements = [];
+        let xp = 0;
+        let level = 1;
+        let sessionCorrect = 0;
+        let sessionWrong = 0;
+        let bossRound = false;
+        let bossQuestions = [];
+        let bossIndex = 0;
+        let reviewQueue = [];
+        let answered = false;
+        let verbProgress = {};
+
+        const STORAGE_KEY = 'irregularVerbsQuizProgress_v2';
+
+        // Сбрасываем сохранённые результаты при каждом новом открытии приложения.
+        try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+
+        function shuffle(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        function loadProgress() {
+            try {
+                return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+                    bestXP: 0, bestPercent: 0, bestStreak: 0, games: 0, mastered: [], courseLevels: {}
+                };
+            } catch {
+                return { bestXP: 0, bestPercent: 0, bestStreak: 0, games: 0, mastered: [], courseLevels: {} };
+            }
+        }
+
+        function saveProgress(extra = {}) {
+            const old = loadProgress();
+            const next = {
+                ...old,
+                ...extra,
+                bestXP: Math.max(old.bestXP || 0, xp),
+                bestPercent: Math.max(old.bestPercent || 0, Math.round((scoreFirstTry / TOTAL_QUESTIONS) * 100)),
+                bestStreak: Math.max(old.bestStreak || 0, bestStreak),
+                games: (old.games || 0) + (extra.incrementGames ? 1 : 0)
+            };
+            delete next.incrementGames;
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+        }
+
+        function levelFromXP(value) {
+            return Math.floor(value / 50) + 1;
+        }
+
+        function addXP(amount) {
+            const oldLevel = level;
+            xp += amount;
+            level = levelFromXP(xp);
+            updateHUD();
+
+            if (level > oldLevel) {
+                showMiniMessage(`⬆️ Уровень ${level}! +${amount} XP`);
+                playAchievementSound();
+            }
+            checkAchievements();
+        }
+
+        function updateHUD() {
+            const xpEl = document.getElementById('xp-number');
+            const levelEl = document.getElementById('level-number');
+            const xpBar = document.getElementById('xp-bar');
+            const comboEl = document.getElementById('streak-number');
+
+            if (xpEl) xpEl.textContent = xp;
+            if (levelEl) levelEl.textContent = level;
+            if (xpBar) xpBar.style.width = `${Math.min(100, (xp % 50) * 2)}%`;
+            if (comboEl) comboEl.textContent = currentStreak;
+        }
+
+        function showMiniMessage(message) {
+            const feedback = document.getElementById('feedback');
+            feedback.innerHTML = `<span class="correct">${message}</span>`;
+            setTimeout(() => {
+                if (!answered) feedback.innerHTML = '';
+            }, 1000);
+        }
+
+        function generateQuestionPool(mode) {
+            const pool = [];
+            verbs.forEach(verb => {
+                const sameForms = String(verb.v2).trim().toLowerCase() === String(verb.v3).trim().toLowerCase();
+                if (mode === 'v2') {
+                    // В режимах V2 и V3 оставляем только глаголы с разными второй и третьей формами.
+                    if (!sameForms) pool.push({ verb, form: 'v2' });
+                } else if (mode === 'v3') {
+                    if (!sameForms) pool.push({ verb, form: 'v3' });
+                } else {
+                    if (sameForms) {
+                        // В смешанном режиме одинаковую V2/V3 достаточно проверить один раз за игру.
+                        pool.push({ verb, form: Math.random() < 0.5 ? 'v2' : 'v3' });
+                    } else {
+                        pool.push({ verb, form: 'v2' }, { verb, form: 'v3' });
+                    }
+                }
+            });
+            return pool;
+        }
+
+        const APPEARANCE_STATS_KEY = 'irregularVerbsQuizAppearanceStats_v1';
+
+        function loadAppearanceStats() {
+            try {
+                return JSON.parse(localStorage.getItem(APPEARANCE_STATS_KEY)) || {};
+            } catch (e) {
+                return {};
+            }
+        }
+
+        function saveAppearanceStats(stats) {
+            try { localStorage.setItem(APPEARANCE_STATS_KEY, JSON.stringify(stats)); } catch (e) {}
+        }
+
+        function buildQuestions(mode) {
+            const pool = shuffle(generateQuestionPool(mode));
+            if (!pool.length) return [];
+
+            // Отдельная история частоты для каждого режима; не сбрасывается вместе с игровым прогрессом.
+            const stats = loadAppearanceStats();
+            const modeCounts = { ...(stats[mode] || {}) };
+            const result = [];
+            const usedBasesThisGame = new Set();
+            const usedCombosThisGame = new Set();
+
+            // В первую очередь берём глаголы, которые реже встречались в этом режиме.
+            // Пока хватает разных глаголов, один и тот же base не повторяется в одном наборе.
+            while (result.length < TOTAL_QUESTIONS && usedBasesThisGame.size < new Set(pool.map(item => item.verb.base)).size) {
+                const candidates = pool.filter(item => !usedBasesThisGame.has(item.verb.base));
+                const minCount = Math.min(...candidates.map(item => Number(modeCounts[item.verb.base] || 0)));
+                const leastSeenBases = [...new Set(candidates
+                    .filter(item => Number(modeCounts[item.verb.base] || 0) === minCount)
+                    .map(item => item.verb.base))];
+                const base = leastSeenBases[Math.floor(Math.random() * leastSeenBases.length)];
+                const choices = candidates.filter(item => item.verb.base === base);
+                const chosen = choices[Math.floor(Math.random() * choices.length)];
+                result.push(chosen);
+                usedBasesThisGame.add(base);
+                usedCombosThisGame.add(`${chosen.verb.base}:${chosen.form}`);
+                modeCounts[base] = Number(modeCounts[base] || 0) + 1;
+            }
+
+            // Если подходящих разных глаголов меньше 25, добираем задания, балансируя частоту
+            // и не повторяя ту же пару «глагол + форма», пока доступны другие пары.
+            while (result.length < TOTAL_QUESTIONS) {
+                let candidates = pool.filter(item => !usedCombosThisGame.has(`${item.verb.base}:${item.form}`));
+                if (!candidates.length) candidates = pool;
+                const minCount = Math.min(...candidates.map(item => Number(modeCounts[item.verb.base] || 0)));
+                const leastSeen = candidates.filter(item => Number(modeCounts[item.verb.base] || 0) === minCount);
+                const chosen = leastSeen[Math.floor(Math.random() * leastSeen.length)];
+                result.push(chosen);
+                usedCombosThisGame.add(`${chosen.verb.base}:${chosen.form}`);
+                modeCounts[chosen.verb.base] = Number(modeCounts[chosen.verb.base] || 0) + 1;
+            }
+
+            // Не записываем заранее запланированные вопросы как уже показанные.
+            // Реальная статистика обновляется только при отображении каждого задания.
+            return result;
+        }
+
+        function recordVerbAppearance(mode, verb) {
+            if (!mode || !verb || !verb.base) return;
+            const stats = loadAppearanceStats();
+            if (!stats[mode] || typeof stats[mode] !== 'object') stats[mode] = {};
+            stats[mode][verb.base] = Number(stats[mode][verb.base] || 0) + 1;
+            stats._all = stats._all || {};
+            stats._all[verb.base] = Number(stats._all[verb.base] || 0) + 1;
+            saveAppearanceStats(stats);
+        }
+
+        function getWrongAnswers(correctForm, formType) {
+            const unique = [...new Set(
+                verbs
+                    .map(v => v[formType])
+                    .filter(value => value !== correctForm)
+            )];
+
+            // Prefer visually/orthographically similar forms as distractors.
+            const scored = unique.map(value => {
+                let score = Math.random();
+                const c = String(correctForm).toLowerCase();
+                const v = String(value).toLowerCase();
+                if (c[0] === v[0]) score += 0.5;
+                if (c.length === v.length) score += 0.2;
+                return { value, score };
+            }).sort((a, b) => b.score - a.score);
+
+            return scored.slice(0, 3).map(x => x.value);
+        }
+
+        function renderDots() {
+            const container = document.getElementById('progress-dots');
+            container.innerHTML = '';
+            dotStates.forEach((state, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                if (state === 'current') dot.classList.add('current');
+                else if (state === 'correct') dot.classList.add('correct');
+                else if (state === 'wrong') dot.classList.add('wrong');
+                else if (state === 'review') dot.classList.add('review');
+                dot.textContent = index + 1;
+                container.appendChild(dot);
+            });
+        }
+
+        function updateStreak(isCorrect) {
+            if (isCorrect) {
+                currentStreak++;
+                bestStreak = Math.max(bestStreak, currentStreak);
+                document.getElementById('streak-counter').classList.add('active');
+                updateHUD();
+                checkAchievements();
+            } else {
+                currentStreak = 0;
+                document.getElementById('streak-counter').classList.remove('active');
+                updateHUD();
+            }
+        }
+
+        function checkAchievements() {
+            achievements.forEach(a => {
+                const earned =
+                    (a.streak && currentStreak === a.streak) ||
+                    (a.xp && xp >= a.xp && !earnedAchievements.includes(a.id)) ||
+                    (a.boss && bossRound && bossIndex >= bossQuestions.length) ||
+                    (a.id === 'perfect' && scoreFirstTry === TOTAL_QUESTIONS && currentQuestionIndex >= TOTAL_QUESTIONS);
+
+                if (earned && !earnedAchievements.includes(a.id)) {
+                    earnedAchievements.push(a.id);
+                    showAchievement(a);
+                }
+            });
+        }
+
+        function showAchievement(achievement) {
+            const popup = document.getElementById('achievement-popup');
+            document.getElementById('achievement-emoji').textContent = achievement.emoji;
+            document.getElementById('achievement-title').textContent = achievement.title;
+            document.getElementById('achievement-desc').textContent = achievement.desc;
+            popup.classList.add('show');
+            playAchievementSound();
+            setTimeout(() => popup.classList.remove('show'), 2200);
+        }
+
+
+        function initVerbProgress() {
+            verbProgress = {};
+            verbs.forEach(verb => {
+                verbProgress[verb.base] = {
+                    v2Correct: 0,
+                    v3Correct: 0,
+                    v2Wrong: 0,
+                    v3Wrong: 0,
+                    lastResult: null
+                };
+            });
+        }
+
+        function getVerbStatus(verb) {
+            const p = verbProgress[verb.base];
+            if (!p) return 'training';
+
+            const wrong = p.v2Wrong + p.v3Wrong;
+            const correct = p.v2Correct + p.v3Correct;
+            const attempted = wrong + correct;
+
+            if (wrong > 0 && (p.lastResult === 'wrong' || wrong >= correct)) {
+                return 'needs-review';
+            }
+
+            // A verb is "mastered" after both relevant forms have been answered
+            // correctly at least once without accumulating a current review flag.
+            const relevantForms = currentMode === 'v2' ? ['v2'] :
+                currentMode === 'v3' ? ['v3'] : ['v2', 'v3'];
+
+            const mastered = relevantForms.every(form =>
+                p[form + 'Correct'] > 0
+            );
+
+            if (mastered) return 'mastered';
+            if (attempted > 0) return 'training';
+            return 'training';
+        }
+
+        function renderVerbMap() {
+            const grid = document.getElementById('verb-map-grid');
+            const summary = document.getElementById('verb-map-summary');
+            if (!grid) return;
+
+            grid.innerHTML = '';
+            let mastered = 0;
+            let review = 0;
+
+            verbs.forEach((verb, index) => {
+                const status = getVerbStatus(verb);
+                if (status === 'mastered') mastered++;
+                if (status === 'needs-review') review++;
+
+                const node = document.createElement('div');
+                node.className = `verb-node ${status}`;
+                if (currentVerb && currentVerb.base === verb.base) {
+                    node.classList.add('current-verb');
+                }
+                if (bossRound && reviewQueue.some(q => q.verb.base === verb.base)) {
+                    node.classList.add('boss-target');
+                }
+
+                const icon = status === 'mastered' ? '🟢' :
+                    status === 'needs-review' ? '🔴' : '🟡';
+
+                const p = verbProgress[verb.base];
+                const relevant = currentMode === 'v2' ? `V2: ${p.v2Correct}` :
+                    currentMode === 'v3' ? `V3: ${p.v3Correct}` :
+                    `V2: ${p.v2Correct} · V3: ${p.v3Correct}`;
+
+                node.innerHTML = `
+                    <div class="verb-status">${icon}</div>
+                    <div class="verb-name">${index + 1}. ${verb.base}</div>
+                    <div class="verb-detail">${relevant}</div>
+                `;
+
+                node.title = `${verb.base} — ${verb.v2} — ${verb.v3}`;
+                grid.appendChild(node);
+            });
+
+            summary.textContent = `${mastered} / ${verbs.length} освоено` +
+                (review ? ` · ${review} на повторение` : '');
+        }
+
+        function updateVerbProgress(isCorrect) {
+            if (!currentVerb || !currentForm) return;
+            const p = verbProgress[currentVerb.base];
+            if (!p) return;
+
+            if (isCorrect) {
+                p[currentForm + 'Correct']++;
+                p.lastResult = 'correct';
+            } else {
+                p[currentForm + 'Wrong']++;
+                p.lastResult = 'wrong';
+            }
+
+            
+        }
+
+        function createQuestion() {
+            answered = false;
+            const questionData = questions[currentQuestionIndex];
+            currentVerb = questionData.verb;
+            currentForm = questionData.form;
+            recordVerbAppearance(currentMode, currentVerb);
+            firstAttempt = true;
+
+            dotStates[currentQuestionIndex] = 'current';
+            renderDots();
+
+            const questionContainer = document.getElementById('question');
+            const formName = currentForm === 'v2' ? 'вторая форма (V2)' : 'третья форма (V3)';
+
+            if (currentMode === 'translate') {
+                questionContainer.innerHTML =
+                    `<div>Какая ${formName} глагола "<strong>${currentVerb.translation}</strong>"?</div>`;
+            } else {
+                questionContainer.innerHTML =
+                    `<div>Какая ${formName} глагола "<strong>${currentVerb.base}</strong>"?</div>
+                     <div class="translation">(${currentVerb.translation})</div>`;
+            }
+
+            correctAnswer = currentVerb[currentForm];
+            const wrongAnswers = getWrongAnswers(correctAnswer, currentForm);
+            const allAnswers = shuffle([correctAnswer, ...wrongAnswers]);
+
+            const answersContainer = document.getElementById('answers');
+            answersContainer.innerHTML = '';
+
+            allAnswers.forEach(answer => {
+                const btn = document.createElement('button');
+                btn.className = 'answer-btn';
+                btn.textContent = answer;
+                btn.onclick = () => checkAnswer(answer, btn);
+                answersContainer.appendChild(btn);
+            });
+
+            updateHUD();
+            
+        }
+
+        function markReviewQuestion() {
+            reviewQueue.push({ verb: currentVerb, form: currentForm });
+        }
+
+        function checkAnswer(answer, btn) {
+            if (answered && answer === correctAnswer) return;
+
+            const feedback = document.getElementById('feedback');
+            const buttons = document.querySelectorAll('.answer-btn');
+
+            if (answer === correctAnswer) {
+                answered = true;
+                playCorrectSound();
+                buttons.forEach(b => b.disabled = true);
+
+                if (firstAttempt) {
+                    updateVerbProgress(true);
+                    scoreFirstTry++;
+                    sessionCorrect++;
+                    addXP(XP_PER_FIRST_TRY + Math.min(5, Math.max(0, currentStreak)));
+                    feedback.innerHTML = `<span class="correct">✓ Отлично! +XP</span>`;
+                    dotStates[currentQuestionIndex] = 'correct';
+                    updateStreak(true);
+                } else {
+                    sessionCorrect++;
+                    addXP(XP_PER_RETRY);
+                    feedback.innerHTML = `<span class="correct">✓ Верно! Ошибка исправлена +${XP_PER_RETRY} XP</span>`;
+                    dotStates[currentQuestionIndex] = 'correct';
+                    updateStreak(false);
+                }
+
+                renderDots();
+
+                setTimeout(() => {
+                    feedback.innerHTML = '';
+                    currentQuestionIndex++;
+
+                    if (currentQuestionIndex < TOTAL_QUESTIONS) {
+                        createQuestion();
+                    } else {
+                        startBossRound();
+                    }
+                }, 900);
+            } else {
+                playIncorrectSound();
+
+                if (firstAttempt) {
+                    updateVerbProgress(false);
+                    mistakes.push({ verb: currentVerb, form: currentForm });
+                    markReviewQuestion();
+                    sessionWrong++;
+                    updateStreak(false);
+                    firstAttempt = false;
+                    dotStates[currentQuestionIndex] = 'wrong';
+                    renderDots();
+                }
+
+                btn.disabled = true;
+                feedback.innerHTML = `<span class="incorrect">✗ Почти! Попробуй ещё раз</span>`;
+                setTimeout(() => {
+                    if (!answered) feedback.innerHTML = '';
+                }, 1100);
+            }
+        }
+
+        function startBossRound() {
+            if (reviewQueue.length === 0) {
+                showFinalScreen();
+                return;
+            }
+
+            bossRound = true;
+            bossQuestions = shuffle([...new Map(
+                reviewQueue.map(q => [`${q.verb.base}:${q.form}`, q])
+            ).values()]).slice(0, 3);
+            bossIndex = 0;
+
+            const feedback = document.getElementById('feedback');
+            feedback.innerHTML = `<span class="correct">🐉 ФИНАЛЬНЫЙ РАУНД! Исправь до 3 своих ошибок</span>`;
+
+            setTimeout(() => {
+                document.getElementById('quiz-screen').classList.remove('hidden');
+                showBossQuestion();
+            }, 1000);
+        }
+
+        function showBossQuestion() {
+            if (bossIndex >= bossQuestions.length) {
+                checkAchievements();
+                showFinalScreen();
+                return;
+            }
+
+            answered = false;
+            const q = bossQuestions[bossIndex];
+            currentVerb = q.verb;
+            currentForm = q.form;
+            recordVerbAppearance(currentMode, currentVerb);
+            firstAttempt = true;
+            correctAnswer = currentVerb[currentForm];
+
+            const question = document.getElementById('question');
+            const formName = currentForm === 'v2' ? 'V2' : 'V3';
+            question.innerHTML =
+                `<div>🐉 <strong>Босс-раунд ${bossIndex + 1}/${bossQuestions.length}</strong></div>
+                 <div>Назови ${formName} глагола "<strong>${currentVerb.base}</strong>"</div>
+                 <div class="translation">(${currentVerb.translation})</div>`;
+
+            const answers = shuffle([correctAnswer, ...getWrongAnswers(correctAnswer, currentForm)]);
+            const container = document.getElementById('answers');
+            container.innerHTML = '';
+            answers.forEach(answer => {
+                const btn = document.createElement('button');
+                btn.className = 'answer-btn';
+                btn.textContent = answer;
+                btn.onclick = () => checkBossAnswer(answer, btn);
+                container.appendChild(btn);
+            });
+
+            document.getElementById('feedback').innerHTML = '';
+            renderBossDots();
+            
+        }
+
+        function renderBossDots() {
+            const container = document.getElementById('progress-dots');
+            container.innerHTML = '';
+            bossQuestions.forEach((_, i) => {
+                const dot = document.createElement('div');
+                dot.className = 'dot ' + (i === bossIndex ? 'current' : i < bossIndex ? 'correct' : '');
+                dot.textContent = '🐉';
+                container.appendChild(dot);
+            });
+        }
+
+        function checkBossAnswer(answer, btn) {
+            const feedback = document.getElementById('feedback');
+            const buttons = document.querySelectorAll('.answer-btn');
+
+            if (answer === correctAnswer) {
+                updateVerbProgress(true);
+                buttons.forEach(b => b.disabled = true);
+                addXP(15);
+                feedback.innerHTML = `<span class="correct">🐉  +15 XP</span>`;
+                bossIndex++;
+                playCorrectSound();
+                setTimeout(showBossQuestion, 900);
+            } else {
+                updateVerbProgress(false);
+                btn.disabled = true;
+                feedback.innerHTML = `<span class="incorrect">✗ Босс ещё не повержен!</span>`;
+                playIncorrectSound();
+            }
+        }
+
+        function renderAchievements() {
+            const container = document.getElementById('achievements-container');
+            if (!earnedAchievements.length) {
+                container.innerHTML = '';
+                return;
+            }
+
+            const cards = earnedAchievements.map(id => {
+                const a = achievements.find(x => x.id === id);
+                return `<div class="achievement-badge">
+                    <span class="badge-emoji">${a.emoji}</span>
+                    <span class="badge-text">${a.title}</span>
+                </div>`;
+            }).join('');
+
+            container.innerHTML = `<div class="achievements-block">
+                <div class="achievements-title">🏅 Достижения этой игры</div>${cards}
+            </div>`;
+        }
+
+        function renderMistakes() {
+            const container = document.getElementById('mistakes-container');
+            if (!mistakes.length) {
+                container.innerHTML = `<div class="no-mistakes">
+                    <div style="font-size:3em;margin-bottom:10px">🎉</div>
+                    <div class="no-mistakes-text">Все ответы с первого раза!</div>
+                </div>`;
+                return;
+            }
+
+            const unique = [...new Map(mistakes.map(m =>
+                [`${m.verb.base}:${m.form}`, m]
+            )).values()];
+
+            let html = `<div class="mistakes-block">
+                <div class="mistakes-title">🧠 Твои ошибки — материал для следующей тренировки</div>`;
+
+            unique.forEach(m => {
+                const formName = m.form === 'v2' ? 'V2' : 'V3';
+                html += `<div class="mistake-card">
+                    <div class="mistake-verb">${m.verb.base} — ${m.verb.v2} — ${m.verb.v3}</div>
+                    <div class="mistake-translation">${m.verb.translation}</div>
+                    <div class="mistake-forms">Нужно запомнить <strong>${formName}</strong>:
+                        <span class="correct-form">${m.verb[m.form]}</span></div>
+                </div>`;
+            });
+
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        
+
+        function renderFinalVerbMap() {
+            const grid = document.getElementById('finalVerbMap');
+            if (!grid) return;
+
+            grid.innerHTML = '';
+
+            verbs.forEach((verb, index) => {
+                const p = verbProgress[verb.base] || {
+                    v2Correct: 0, v3Correct: 0,
+                    v2Wrong: 0, v3Wrong: 0,
+                    lastResult: null
+                };
+
+                const forms = currentMode === 'v2' ? ['v2'] :
+                    currentMode === 'v3' ? ['v3'] : ['v2', 'v3'];
+
+                const attempted = forms.some(f => (p[f + 'Correct'] + p[f + 'Wrong']) > 0);
+                const hasWrong = forms.some(f => p[f + 'Wrong'] > 0);
+                const mastered = forms.every(f => p[f + 'Correct'] > 0) && !hasWrong;
+
+                const status = !attempted ? 'unseen' :
+                    mastered ? 'mastered' :
+                    hasWrong ? 'needs-review' : 'training';
+
+                const icon = status === 'mastered' ? '🟢' :
+                    status === 'needs-review' ? '🔴' :
+                    status === 'training' ? '🟡' : '⚪';
+
+                const node = document.createElement('div');
+                node.className = `verb-node ${status}`;
+                node.innerHTML = `
+                    <div class="verb-status">${icon}</div>
+                    <div class="verb-name">${index + 1}. ${verb.base}</div>
+                    <div class="verb-detail">${verb.v2} · ${verb.v3}</div>
+                `;
+                node.title = `${verb.base} — ${verb.v2} — ${verb.v3}`;
+                grid.appendChild(node);
+            });
+        }
+
+
+
+function showFinalScreen() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('final-screen').style.display = 'block';
+            document.getElementById('streak-counter').classList.remove('active');
+
+            const percent = Math.round((scoreFirstTry / TOTAL_QUESTIONS) * 100);
+            const previous = loadProgress();
+
+            document.getElementById('first-try-count').textContent = `${scoreFirstTry} из ${TOTAL_QUESTIONS}`;
+            document.getElementById('final-percent').textContent = `${percent}%`;
+            document.getElementById('best-streak').textContent = bestStreak;
+
+            const finalXP = document.getElementById('final-xp');
+            const personalBest = document.getElementById('personal-best');
+            const gamesPlayed = document.getElementById('games-played');
+            if (finalXP) finalXP.textContent = `${xp} XP`;
+            if (personalBest) personalBest.textContent = `${Math.max(previous.bestPercent || 0, percent)}%`;
+            if (gamesPlayed) gamesPlayed.textContent = `${(previous.games || 0) + 1}`;
+
+            const emoji = document.getElementById('final-emoji');
+            emoji.textContent = percent === 100 ? '🏆' :
+                percent >= 80 ? '🌟' :
+                percent >= 60 ? '👍' :
+                percent >= 40 ? '📚' : '💪';
+
+            renderAchievements();
+            renderMistakes();
+            renderFinalVerbMap();
+
+            // Сохраняем результат завершённого режима как результат уровня курса.
+            saveCourseLevelResult(currentMode, percent);
+            renderCourseProgress();
+            renderCertificateBlock();
+            
+
+            saveProgress({
+                bestXP: Math.max(previous.bestXP || 0, xp),
+                bestPercent: Math.max(previous.bestPercent || 0, percent),
+                bestStreak: Math.max(previous.bestStreak || 0, bestStreak),
+                incrementGames: true
+            });
+        }
+
+        function startGame(mode) {
+            currentMode = mode;
+            currentQuestionIndex = 0;
+            scoreFirstTry = 0;
+            mistakes = [];
+            currentStreak = 0;
+            bestStreak = 0;
+            earnedAchievements = [];
+            xp = 0;
+            level = 1;
+            sessionCorrect = 0;
+            sessionWrong = 0;
+            bossRound = false;
+            bossQuestions = [];
+            bossIndex = 0;
+            reviewQueue = [];
+            initVerbProgress();
+
+            questions = buildQuestions(mode);
+            dotStates = new Array(TOTAL_QUESTIONS).fill('pending');
+
+            document.getElementById('mode-screen').classList.add('hidden');
+            document.getElementById('final-screen').style.display = 'none';
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            document.getElementById('current-mode-label').textContent = modeLabels[mode];
+            document.getElementById('feedback').innerHTML = '';
+
+            renderDots();
+            updateHUD();
+            
+            createQuestion();
+        }
+
+        function backToMenu() {
+            document.getElementById('final-screen').style.display = 'none';
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('mode-screen').classList.remove('hidden');
+            renderCourseProgress();
+        }
+
+        renderCourseProgress();
+        renderCertificateBlock();
+
+        function playCorrectSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                [523.25, 659.25, 783.99].forEach((freq, i) => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    oscillator.frequency.value = freq;
+                    oscillator.type = 'sine';
+                    const startTime = audioContext.currentTime + i * 0.08;
+                    gainNode.gain.setValueAtTime(0.3, startTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.25);
+                    oscillator.start(startTime);
+                    oscillator.stop(startTime + 0.25);
+                });
+            } catch (e) {}
+        }
+
+        function playIncorrectSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(150, audioContext.currentTime + 0.3);
+                oscillator.type = 'sawtooth';
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.3);
+            } catch (e) {}
+        }
+
+        function playAchievementSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    oscillator.frequency.value = freq;
+                    oscillator.type = 'sine';
+                    const startTime = audioContext.currentTime + i * 0.12;
+                    gainNode.gain.setValueAtTime(0.3, startTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.3);
+                    oscillator.start(startTime);
+                    oscillator.stop(startTime + 0.3);
+                });
+            } catch (e) {}
+        }
+    </script>
+</body>
+</html>
